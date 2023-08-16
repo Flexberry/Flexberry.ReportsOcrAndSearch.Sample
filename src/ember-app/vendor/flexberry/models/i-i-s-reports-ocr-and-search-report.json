@@ -1,0 +1,54 @@
+﻿{
+  "name": "IISReportsOcrAndSearchReport",
+  "modelName": "i-i-s-reports-ocr-and-search-report",
+  "className": "Report",
+  "nameSpace": "IIS.ReportsOcrAndSearch",
+  "parentModelName": null,
+  "parentClassName": null,
+  "attrs": [
+    {
+      "name": "reportFile",
+      "type": "file",
+      "flexberryType": "WebFile",
+      "notNull": false,
+      "defaultValue": "",
+      "stored": true,
+      "ordered": false
+    }
+  ],
+  "belongsTo": [],
+  "hasMany": [],
+  "projections": [
+    {
+      "name": "ReportE",
+      "modelName": "i-i-s-reports-ocr-and-search-report",
+      "attrs": [
+        {
+          "name": "reportFile",
+          "caption": "Report file",
+          "hidden": false,
+          "index": 0
+        }
+      ],
+      "belongsTo": [],
+      "hasMany": []
+    },
+    {
+      "name": "ReportL",
+      "modelName": "i-i-s-reports-ocr-and-search-report",
+      "attrs": [
+        {
+          "name": "reportFile",
+          "caption": "Report file",
+          "hidden": false,
+          "index": 0
+        }
+      ],
+      "belongsTo": [],
+      "hasMany": []
+    }
+  ],
+  "stored": true,
+  "offline": true,
+  "external": false
+}

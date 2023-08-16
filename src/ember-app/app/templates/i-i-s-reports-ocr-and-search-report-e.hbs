@@ -1,0 +1,43 @@
+<h3 class="ui header">{{t "forms.i-i-s-reports-ocr-and-search-report-e.caption"}}{{#if readonly}} ({{t "forms.edit-form.readonly"}}){{/if}}</h3>
+
+<form class="ui form flexberry-vertical-form" role="form">
+  {{flexberry-error error=error}}
+  <div class="field">
+    {{flexberry-edit-panel
+      showCloseButton=true
+      deepMount=true
+      buttons=(array
+        (hash
+          type="submit"
+          class="save-button"
+          disabled=(readonly)
+          text=(t "forms.edit-form.save-button-text")
+          icon="icon icon-save"
+          action="save")
+        (hash
+          type="submit"
+          class="save-close-button"
+          disabled=(readonly)
+          text=(t "forms.edit-form.saveAndClose-button-text")
+          icon="icon icon-save-close"
+          action="saveAndClose"
+        ))
+    }}
+  </div>
+  <div class="field flexberry-validationsummary-container">
+    <div class="sixteen wide">
+      {{flexberry-validationsummary errors=(v-get validationObject "messages")}}
+    </div>
+  </div>
+  <div class="field">
+    <label>{{t "forms.i-i-s-reports-ocr-and-search-report-e.reportFile-caption"}}</label>
+    {{flexberry-file
+      readonly=readonly
+      value=model.reportFile
+      class=(if (v-get validationModel "reportFile" "isInvalid") "error")
+      label=(t "forms.i-i-s-reports-ocr-and-search-report-e.reportFile-caption")
+      data-test-i-i-s-reports-ocr-and-search-report-e-reportFile=true
+    }}
+    {{flexberry-validationmessage error=(v-get validationModel "reportFile" "message")}}
+  </div>
+</form>

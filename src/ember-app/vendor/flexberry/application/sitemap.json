@@ -1,0 +1,22 @@
+﻿{
+  "applicationCaption": "Reports ocr and search",
+  "applicationTitle": "Reports ocr and search",
+  "items": [
+    {
+      "link": null,
+      "menuName": "reports-ocr-and-search",
+      "caption": "ReportsOcrAndSearch",
+      "title": "ReportsOcrAndSearch",
+      "children": [
+        {
+          "link": "i-i-s-reports-ocr-and-search-report-l",
+          "menuName": null,
+          "caption": "Report",
+          "title": "",
+          "children": null
+        }
+      ]
+    }
+  ],
+  "mobile": true
+}
