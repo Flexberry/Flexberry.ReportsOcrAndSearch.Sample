@@ -1,0 +1,14 @@
+﻿{
+  "propertyLookup": [],
+  "external": false,
+  "caption": "Report",
+  "name": "IISReportsOcrAndSearchReportE",
+  "className": "ReportE",
+  "attrs": [],
+  "projections": [
+    {
+      "modelName": "i-i-s-reports-ocr-and-search-report",
+      "modelProjection": "ReportE"
+    }
+  ]
+}

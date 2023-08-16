@@ -1,0 +1,15 @@
+﻿{
+  "newForm": "i-i-s-reports-ocr-and-search-report-e",
+  "editForm": "i-i-s-reports-ocr-and-search-report-e",
+  "external": false,
+  "caption": "Report",
+  "name": "IISReportsOcrAndSearchReportL",
+  "className": "ReportL",
+  "attrs": [],
+  "projections": [
+    {
+      "modelName": "i-i-s-reports-ocr-and-search-report",
+      "modelProjection": "ReportL"
+    }
+  ]
+}
