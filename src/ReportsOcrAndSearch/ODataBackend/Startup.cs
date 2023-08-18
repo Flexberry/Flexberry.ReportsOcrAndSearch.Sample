@@ -75,7 +75,8 @@
         /// </remarks>
         /// <param name="app">An application configurator.</param>
         /// <param name="env">Information about web hosting environment.</param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        /// <param name="uploadedFilesHandler">Handler for uploaded files.</param>
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IUploadedFilesHandler uploadedFilesHandler)
         {
             LogService.LogInfo("Инициирован запуск приложения.");
 
@@ -106,6 +107,9 @@
                 var modelBuilder = new DefaultDataObjectEdmModelBuilder(assemblies, true);
 
                 var token = builder.MapDataObjectRoute(modelBuilder);
+
+                token.Events.CallbackAfterCreate = uploadedFilesHandler.CallbackAfterUpdate;
+                token.Events.CallbackAfterUpdate = uploadedFilesHandler.CallbackAfterUpdate;
             });
         }
 
@@ -130,6 +134,12 @@
             container.RegisterInstance(Configuration);
 
             RegisterDataObjectFileAccessor(container);
+
+            string ocrFileStoragePath = Configuration["OCRFileStoragePath"];
+            container.RegisterType<IUploadedFilesHandler, FileTransferToOCR>(
+                Invoke.Constructor(
+                    ocrFileStoragePath));
+
             RegisterORM(container);
         }
 
@@ -141,6 +151,7 @@
         {
             const string fileControllerPath = "api/file";
             string baseUriRaw = Configuration["BackendRoot"];
+
             if (string.IsNullOrEmpty(baseUriRaw))
             {
                 throw new System.Configuration.ConfigurationErrorsException("BackendRoot is not specified in Configuration or enviromnent variables.");
@@ -149,6 +160,7 @@
             Console.WriteLine($"baseUriRaw is {baseUriRaw}");
             var baseUri = new Uri(baseUriRaw);
             string uploadPath = Configuration["UploadUrl"];
+
             container.RegisterSingleton<IDataObjectFileAccessor, DefaultDataObjectFileAccessor>(
                 Invoke.Constructor(
                     baseUri,
