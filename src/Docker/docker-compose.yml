@@ -11,6 +11,8 @@ services:
       - UploadUrl=Uploads
       - BackendRoot=http://localhost
       - DefConnStr=SERVER=app-postgres-db;User ID=flexberryuser;Password=jhv;Port=5432;database=appdb;
+    volumes:
+      - REPORTSPDF:/var/reportspdf
 
   app-postgres-db:
     image: reportsocrandsearch/postgre-sql
@@ -18,5 +20,12 @@ services:
       - DB:/var/lib/pgsql/data/
     ports:
       - 5432:5432
+      
+  ocr-service:
+    image: reportsocrandsearch/ocr-service-tesseract
+    volumes:
+      - REPORTSPDF:/var/reportspdf
+
 volumes:
   DB:
+  REPORTSPDF:
