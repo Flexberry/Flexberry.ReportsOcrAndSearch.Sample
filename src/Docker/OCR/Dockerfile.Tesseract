@@ -1,0 +1,8 @@
+﻿FROM ubuntu:18.04
+
+RUN apt-get update \
+ && apt-get -y install tesseract-ocr \
+ && apt-get -y install tesseract-ocr-all \
+ && apt-get -y install imagemagick
+
+COPY /OCR/policy.xml /etc/ImageMagick-6/policy.xml
