@@ -133,12 +133,11 @@
             // FYI: сервис данных ходит в контейнер UnityFactory.
             container.RegisterInstance(Configuration);
 
-            RegisterDataObjectFileAccessor(container);
-
-            string ocrFileStoragePath = Configuration["OCRFileStoragePath"];
-            container.RegisterType<IDataObjectUpdateHandler, FileTransferToOCR>(
+            string uploadPath = Configuration["UploadUrl"];
+            RegisterDataObjectFileAccessor(container, uploadPath);
+            container.RegisterType<IDataObjectUpdateHandler, FileTransferToOcr>(
                 Invoke.Constructor(
-                    ocrFileStoragePath));
+                    uploadPath));
 
             RegisterORM(container);
         }
@@ -147,7 +146,7 @@
         /// Register implementation of <see cref="IDataObjectFileAccessor"/>.
         /// </summary>
         /// <param name="container">Container to register at.</param>
-        private void RegisterDataObjectFileAccessor(IUnityContainer container)
+        private void RegisterDataObjectFileAccessor(IUnityContainer container, string uploadPath)
         {
             const string fileControllerPath = "api/file";
             string baseUriRaw = Configuration["BackendRoot"];
@@ -159,7 +158,6 @@
 
             Console.WriteLine($"baseUriRaw is {baseUriRaw}");
             var baseUri = new Uri(baseUriRaw);
-            string uploadPath = Configuration["UploadUrl"];
 
             container.RegisterSingleton<IDataObjectFileAccessor, DefaultDataObjectFileAccessor>(
                 Invoke.Constructor(

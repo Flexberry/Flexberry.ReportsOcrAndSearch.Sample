@@ -1,23 +1,23 @@
 ﻿namespace IIS.ReportsOcrAndSearch
 {
     using System.IO;
-    using System.Net;
+    using System.Text.RegularExpressions;
     using ICSSoft.STORMNET;
 
     /// <summary>
     /// Класс для сохрания pdf файла в общее файловое хранилище и отправки запроса в OCR.
     /// </summary>
-    public class FileTransferToOCR: IDataObjectUpdateHandler
+    public class FileTransferToOcr : IDataObjectUpdateHandler
     {
-        private string ocrFileStoragePath;
+        private string fileUploadPath;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileTransferToOCR"/> class.
+        /// Initializes a new instance of the <see cref="FileTransferToOcr"/> class.
         /// </summary>
-        /// <param name="ocrFileStoragePath">Путь в общем хранилище, которое доступно OCR сервису.</param>
-        public FileTransferToOCR(string ocrFileStoragePath)
+        /// <param name="fileUploadPath">Путь в общем хранилище, которое доступно OCR сервису.</param>
+        public FileTransferToOcr(string fileUploadPath)
         {
-            this.ocrFileStoragePath = ocrFileStoragePath;
+            this.fileUploadPath = fileUploadPath;
         }
 
         /// <summary>
@@ -33,13 +33,14 @@
                 Report report = (Report)dataObject;
 
                 string fileName = report.reportFile.Name;
-                string saveDirectory = Path.Combine(ocrFileStoragePath, fileName);
                 string url = report.reportFile.Url;
 
-                using (var client = new WebClient())
-                {
-                    client.DownloadFile(url, saveDirectory);
-                }
+                Regex regex = new Regex("fileUploadKey=(.*?)&");
+                string uploadKey = regex.Match(url).Groups[1].ToString();
+
+                string filePath = Path.Combine(fileUploadPath, uploadKey, fileName);
+
+                LogService.LogInfo(filePath);
             }
         }
     }
