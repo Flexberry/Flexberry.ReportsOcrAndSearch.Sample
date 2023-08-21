@@ -7,7 +7,7 @@
     /// <summary>
     /// Класс для сохрания pdf файла в общее файловое хранилище и отправки запроса в OCR.
     /// </summary>
-    public class FileTransferToOCR: IUploadedFilesHandler
+    public class FileTransferToOCR: IDataObjectUpdateHandler
     {
         private string ocrFileStoragePath;
 
@@ -26,15 +26,20 @@
         /// <param name="dataObject">Измененный объек.</param>
         public void CallbackAfterUpdate(DataObject dataObject)
         {
-            Report report = (Report)dataObject;
+            string typeName = dataObject.GetType().Name;
 
-            string fileName = report.reportFile.Name;
-            string saveDirectory = Path.Combine(ocrFileStoragePath, fileName);
-            string url = report.reportFile.Url;
-
-            using (var client = new WebClient())
+            if (typeName == "Report")
             {
-                client.DownloadFile(url, saveDirectory);
+                Report report = (Report)dataObject;
+
+                string fileName = report.reportFile.Name;
+                string saveDirectory = Path.Combine(ocrFileStoragePath, fileName);
+                string url = report.reportFile.Url;
+
+                using (var client = new WebClient())
+                {
+                    client.DownloadFile(url, saveDirectory);
+                }
             }
         }
     }

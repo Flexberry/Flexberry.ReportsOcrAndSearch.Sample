@@ -3,9 +3,9 @@
     using ICSSoft.STORMNET;
 
     /// <summary>
-    /// Интерфейс для обработки событий изменения DataObject. В данном случае это нужно, чтобы отправить загруженный файл в OCR.
+    /// Интерфейс для обработки событий изменения DataObject.
     /// </summary>
-    public interface IUploadedFilesHandler
+    public interface IDataObjectUpdateHandler
     {
         /// <summary>
         /// Обработчик события обновления или создания объекта.

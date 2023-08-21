@@ -76,7 +76,7 @@
         /// <param name="app">An application configurator.</param>
         /// <param name="env">Information about web hosting environment.</param>
         /// <param name="uploadedFilesHandler">Handler for uploaded files.</param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IUploadedFilesHandler uploadedFilesHandler)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDataObjectUpdateHandler uploadedFilesHandler)
         {
             LogService.LogInfo("Инициирован запуск приложения.");
 
@@ -136,7 +136,7 @@
             RegisterDataObjectFileAccessor(container);
 
             string ocrFileStoragePath = Configuration["OCRFileStoragePath"];
-            container.RegisterType<IUploadedFilesHandler, FileTransferToOCR>(
+            container.RegisterType<IDataObjectUpdateHandler, FileTransferToOCR>(
                 Invoke.Constructor(
                     ocrFileStoragePath));
 
