@@ -1,5 +1,6 @@
 ﻿namespace IIS.ReportsOcrAndSearch
 {
+    using System;
     using System.IO;
     using System.Text.RegularExpressions;
     using ICSSoft.STORMNET;
@@ -23,15 +24,15 @@
         /// <summary>
         /// Обработчик события обновления или создания объекта.
         /// </summary>
-        /// <param name="dataObject">Измененный объек.</param>
+        /// <param name="dataObject">Измененный объект.</param>
         public void CallbackAfterUpdate(DataObject dataObject)
         {
             if (dataObject == null)
             {
-                return;
+                throw new ArgumentNullException(nameof(dataObject));
             }
 
-            if (typeof(Report) == dataObject.GetType())
+            if (dataObject.GetType() == typeof(Report))
             {
                 Report report = (Report)dataObject;
 
@@ -39,14 +40,14 @@
                 string url = report.reportFile.Url;
 
                 Regex regex = new Regex("fileUploadKey=(.*?)&");
-                var regexMatch = regex.Match(url).Groups;
+                GroupCollection regexMatch = regex.Match(url).Groups;
 
                 if (regexMatch != null && regexMatch.Count > 1)
                 {
                     string uploadKey = regex.Match(url).Groups[1].ToString();
                     string filePath = Path.Combine(fileUploadPath, uploadKey, fileName);
 
-                    // Вызов OCR сервиса, с передачей пути к распознаваемому файлу(filePath).
+                    // Вызов OCR сервиса с передачей пути к распознаваемому файлу(filePath).
                 }
             }
         }
