@@ -26,9 +26,12 @@
         /// <param name="dataObject">Измененный объек.</param>
         public void CallbackAfterUpdate(DataObject dataObject)
         {
-            string typeName = dataObject.GetType().Name;
+            if (dataObject == null)
+            {
+                return;
+            }
 
-            if (typeName == "Report")
+            if (typeof(Report) == dataObject.GetType())
             {
                 Report report = (Report)dataObject;
 
@@ -36,11 +39,15 @@
                 string url = report.reportFile.Url;
 
                 Regex regex = new Regex("fileUploadKey=(.*?)&");
-                string uploadKey = regex.Match(url).Groups[1].ToString();
+                var regexMatch = regex.Match(url).Groups;
 
-                string filePath = Path.Combine(fileUploadPath, uploadKey, fileName);
+                if (regexMatch != null && regexMatch.Count > 1)
+                {
+                    string uploadKey = regex.Match(url).Groups[1].ToString();
+                    string filePath = Path.Combine(fileUploadPath, uploadKey, fileName);
 
-                LogService.LogInfo(filePath);
+                    // Вызов OCR сервиса, с передачей пути к распознаваемому файлу(filePath).
+                }
             }
         }
     }
