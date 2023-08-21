@@ -75,7 +75,8 @@
         /// </remarks>
         /// <param name="app">An application configurator.</param>
         /// <param name="env">Information about web hosting environment.</param>
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        /// <param name="uploadedFilesHandler">Handler for uploaded files.</param>
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IDataObjectUpdateHandler uploadedFilesHandler)
         {
             LogService.LogInfo("Инициирован запуск приложения.");
 
@@ -106,6 +107,9 @@
                 var modelBuilder = new DefaultDataObjectEdmModelBuilder(assemblies, true);
 
                 var token = builder.MapDataObjectRoute(modelBuilder);
+
+                token.Events.CallbackAfterCreate = uploadedFilesHandler.CallbackAfterUpdate;
+                token.Events.CallbackAfterUpdate = uploadedFilesHandler.CallbackAfterUpdate;
             });
         }
 
@@ -129,7 +133,12 @@
             // FYI: сервис данных ходит в контейнер UnityFactory.
             container.RegisterInstance(Configuration);
 
-            RegisterDataObjectFileAccessor(container);
+            string uploadPath = Configuration["UploadUrl"];
+            RegisterDataObjectFileAccessor(container, uploadPath);
+            container.RegisterType<IDataObjectUpdateHandler, FileTransferToOcr>(
+                Invoke.Constructor(
+                    uploadPath));
+
             RegisterORM(container);
         }
 
@@ -137,10 +146,11 @@
         /// Register implementation of <see cref="IDataObjectFileAccessor"/>.
         /// </summary>
         /// <param name="container">Container to register at.</param>
-        private void RegisterDataObjectFileAccessor(IUnityContainer container)
+        private void RegisterDataObjectFileAccessor(IUnityContainer container, string uploadPath)
         {
             const string fileControllerPath = "api/file";
             string baseUriRaw = Configuration["BackendRoot"];
+
             if (string.IsNullOrEmpty(baseUriRaw))
             {
                 throw new System.Configuration.ConfigurationErrorsException("BackendRoot is not specified in Configuration or enviromnent variables.");
@@ -148,7 +158,7 @@
 
             Console.WriteLine($"baseUriRaw is {baseUriRaw}");
             var baseUri = new Uri(baseUriRaw);
-            string uploadPath = Configuration["UploadUrl"];
+
             container.RegisterSingleton<IDataObjectFileAccessor, DefaultDataObjectFileAccessor>(
                 Invoke.Constructor(
                     baseUri,

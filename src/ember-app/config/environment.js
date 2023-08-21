@@ -6,7 +6,7 @@ module.exports = function(environment) {
 
   if (environment === 'development-loc') {
     // Use `ember s -e development-loc` command for local backend usage.
-    backendUrl = 'http://localhost:80';
+    backendUrl = 'http://localhost:6500';
   }
 
 
