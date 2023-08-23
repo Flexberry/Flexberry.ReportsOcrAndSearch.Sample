@@ -1,8 +1,32 @@
-﻿FROM ubuntu:18.04
+﻿FROM mcr.microsoft.com/dotnet/sdk:7.0 as webApiBackend
 
+COPY ReportsOcrAndSearch /ReportsOcrAndSearch
+
+WORKDIR /ReportsOcrAndSearch
+
+RUN \
+ dotnet restore ReportsOcrAndSearch.sln;\
+ dotnet build ReportsOcrAndSearch.sln -c Release;\
+ dotnet publish OcrService/ReportsOcrAndSearch.OcrService.csproj -c Release -o out -f net7.0
+ 
+ 
+FROM mcr.microsoft.com/dotnet/aspnet:7.0
+
+#Устанавливаем tesseract и imagemagic.
 RUN apt-get update \
  && apt-get -y install tesseract-ocr \
  && apt-get -y install tesseract-ocr-all \
  && apt-get -y install imagemagick
 
-COPY /OCR/policy.xml /etc/ImageMagick-6/policy.xml
+COPY Docker/OCR/policy.xml /etc/ImageMagick-6/policy.xml
+
+#Копируем и запускаем собранное приложение.
+WORKDIR /app
+
+COPY --from=webApiBackend /ReportsOcrAndSearch/out ./
+
+# Check webapi responses
+HEALTHCHECK --interval=60s --timeout=15s --start-period=20s \
+  CMD curl -f "http://0.0.0.0/health" || exit
+
+ENTRYPOINT ["dotnet", "ReportsOcrAndSearch.OcrService.dll"]

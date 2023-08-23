@@ -25,6 +25,8 @@ services:
     image: reportsocrandsearch/ocr-service-tesseract
     volumes:
       - REPORTSPDF:/var/reportspdf
+    ports:
+      - 6600:80
 
   elasticsearch:
     image: reportsocrandsearch/elasticsearch
