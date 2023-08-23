@@ -38,7 +38,18 @@ PUT _ingest/pipeline/attachment
     }
   ]
 }
+
 ```
+
+В Postman этот запрос (и результат) будет выглядеть следующим образом.
+
+<img src="images/postman_example.png" width=80%>
+
+
+`field` – поле связываем с переменной `data`, значение которой будет передано в последующем запросе.
+
+`remove_binary` – параметр определяющий удалить (true) или сохранить (false) двоичное представление файла в Elasticsearch.
+
 
 2. Отправляем файл
 
@@ -65,9 +76,9 @@ PUT my-attachment-index-01/_doc/file1_id?pipeline=attachment
 }
 ```
 
-`my-attachment-index-01` – уникальный индекс, который задается самостоятельно.
+`my-attachment-index-01` – уникальный индекс, который задается самостоятельно. Индекс можно рассматривать в качестве аналога таблицы с данными классических СУБД.
 
-`file1_id` – уникальный идентификатор файла, который задается самостоятельно.
+`file1_id` – уникальный идентификатор файла, который задается самостоятельно. Своего рода идентификатор записи в таблице.
 
 
 ## Поиск файлов, содержащих нужную информацию
@@ -131,3 +142,5 @@ POST /my-attachment-index-01/_delete_by_query
 3. [Retrieve selected fields from a search](https://www.elastic.co/guide/en/elasticsearch/reference/current/search-fields.html)
 4. [Delete API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-delete.html)
 5. [Delete by query API](https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-delete-by-query.html)
+6. [Data in: documents and indices](https://www.elastic.co/guide/en/elasticsearch/reference/current/documents-indices.html)
+7. [Индексы](https://cloud.yandex.ru/docs/managed-elasticsearch/concepts/indexing)
