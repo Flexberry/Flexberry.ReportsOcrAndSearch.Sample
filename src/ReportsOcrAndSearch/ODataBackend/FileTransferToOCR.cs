@@ -45,9 +45,9 @@
                 if (regexMatch != null && regexMatch.Count > 1)
                 {
                     string uploadKey = regex.Match(url).Groups[1].ToString();
-                    string filePath = Path.Combine(fileUploadPath, uploadKey, fileName);
 
-                    // Вызов OCR сервиса с передачей пути к распознаваемому файлу(filePath).
+                    // Отправка запроса OCR-сервису
+                    //  http://ocr-service/api/OcrRecognizer/RunRecognizeUploadedPdf?fileUploadPath=...&uploadKey=...&fileName=...
                 }
             }
         }

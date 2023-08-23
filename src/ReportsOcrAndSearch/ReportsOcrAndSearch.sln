@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30611.23
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReportsOcrAndSearch.Objects", "Objects\ReportsOcrAndSearch.Objects.csproj", "{0F0C68A4-1608-4151-9D30-EDD7DCB27D77}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReportsOcrAndSearch.ODataBackend", "ODataBackend\ReportsOcrAndSearch.ODataBackend.csproj", "{281A6D6E-B654-4072-BB62-473C4A61A333}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReportsOcrAndSearch.OcrService", "OcrService\ReportsOcrAndSearch.OcrService.csproj", "{46BC0622-272F-47B5-B9DF-8DC6594949CC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{281A6D6E-B654-4072-BB62-473C4A61A333}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{281A6D6E-B654-4072-BB62-473C4A61A333}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{281A6D6E-B654-4072-BB62-473C4A61A333}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46BC0622-272F-47B5-B9DF-8DC6594949CC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46BC0622-272F-47B5-B9DF-8DC6594949CC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46BC0622-272F-47B5-B9DF-8DC6594949CC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46BC0622-272F-47B5-B9DF-8DC6594949CC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

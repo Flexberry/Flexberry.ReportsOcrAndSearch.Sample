@@ -42,9 +42,9 @@ COPY /OCR/policy.xml /etc/ImageMagick-6/policy.xml
 
 docker run -it -v c:/tmp/app:/home/work reportsocrandsearch/ocr-service-tesseract
 
-2) Преобразовать pdf в png.
+2) Преобразовать pdf в png (в высоком качестве)
 
-convert 1.pdf 1.png
+convert -density 300 -trim 2.pdf -quality 100 2.png
 
 3) Распознать текст и вывести результат в файлах
 

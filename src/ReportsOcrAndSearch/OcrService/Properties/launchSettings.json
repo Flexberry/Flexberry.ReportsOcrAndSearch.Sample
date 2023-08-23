@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "IIS.ReportsOcrAndSearch.OcrService": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "applicationUrl": "http://localhost:6600",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "BackendRoot": "http://localhost:6600",
+        "DefConnStr": ""
+      }
+    }
+  }
+}
