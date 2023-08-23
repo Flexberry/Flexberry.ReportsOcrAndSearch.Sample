@@ -5,19 +5,19 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
     using System.Diagnostics;
 
     /// <summary>
-    /// Контроллер, обрабаывающий запросы на распознавание файлов.
+    /// РљРѕРЅС‚СЂРѕР»Р»РµСЂ, РѕР±СЂР°Р±Р°С‹РІР°СЋС‰РёР№ Р·Р°РїСЂРѕСЃС‹ РЅР° СЂР°СЃРїРѕР·РЅР°РІР°РЅРёРµ С„Р°Р№Р»РѕРІ.
     /// </summary>
     [ApiController]
     [Route("api/[controller]/[action]")]
     public class OcrRecognizer : ControllerBase
     {
         /// <summary>
-        /// Метод, обрабатывающий Post-запрос на распознавание указанного pdf файла. После распознавания файл отправляется в ElasticSearch.
-        /// Пример запроса - http://localhost:6600/api/OcrRecognizer/RunRecognizeUploadedPdf?uploadDirectory=...&uploadKey=...&fileName=...
+        /// РњРµС‚РѕРґ, РѕР±СЂР°Р±Р°С‚С‹РІР°СЋС‰РёР№ Post-Р·Р°РїСЂРѕСЃ РЅР° СЂР°СЃРїРѕР·РЅР°РІР°РЅРёРµ СѓРєР°Р·Р°РЅРЅРѕРіРѕ pdf С„Р°Р№Р»Р°. РџРѕСЃР»Рµ СЂР°СЃРїРѕР·РЅР°РІР°РЅРёСЏ С„Р°Р№Р» РѕС‚РїСЂР°РІР»СЏРµС‚СЃСЏ РІ ElasticSearch.
+        /// РџСЂРёРјРµСЂ Р·Р°РїСЂРѕСЃР° - http://localhost:6600/api/OcrRecognizer/RunRecognizeUploadedPdf?uploadDirectory=...&uploadKey=...&fileName=...
         /// </summary>
-        /// <param name="uploadDirectory">Директория с загруженными pdf файлами.</param>
-        /// <param name="uploadKey">GUID загрузки.</param>
-        /// <param name="fileName">Имя файла.</param>
+        /// <param name="uploadDirectory">Р”РёСЂРµРєС‚РѕСЂРёСЏ СЃ Р·Р°РіСЂСѓР¶РµРЅРЅС‹РјРё pdf С„Р°Р№Р»Р°РјРё.</param>
+        /// <param name="uploadKey">GUID Р·Р°РіСЂСѓР·РєРё.</param>
+        /// <param name="fileName">РРјСЏ С„Р°Р№Р»Р°.</param>
         [HttpPost]
         public IActionResult RunRecognizeUploadedPdf(string uploadDirectory, string uploadKey, string fileName)
         {
@@ -46,17 +46,17 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
                 return BadRequest("Recognition error: " + ex.Message);
             }
 
-            // Отправить распознанный и склеенный fileNameWithoutExt .txt в Elastic.
+            // РћС‚РїСЂР°РІРёС‚СЊ СЂР°СЃРїРѕР·РЅР°РЅРЅС‹Р№ Рё СЃРєР»РµРµРЅРЅС‹Р№ fileNameWithoutExt .txt РІ Elastic.
 
             return Ok("Recognition completed");
         }
 
         /// <summary>
-        /// Конвертирует указанный pdf в набор png файлов.
+        /// РљРѕРЅРІРµСЂС‚РёСЂСѓРµС‚ СѓРєР°Р·Р°РЅРЅС‹Р№ pdf РІ РЅР°Р±РѕСЂ png С„Р°Р№Р»РѕРІ.
         /// </summary>
-        /// <param name="mainDirectory">Директория, где находится изначальный файл.</param>
-        /// <param name="pngDirectory">Директория в которую будут складываться png файлы.</param>
-        /// <param name="originFileNameWithoutExt">Имя изначального pdf файла, без расширения.</param>
+        /// <param name="mainDirectory">Р”РёСЂРµРєС‚РѕСЂРёСЏ, РіРґРµ РЅР°С…РѕРґРёС‚СЃСЏ РёР·РЅР°С‡Р°Р»СЊРЅС‹Р№ С„Р°Р№Р».</param>
+        /// <param name="pngDirectory">Р”РёСЂРµРєС‚РѕСЂРёСЏ РІ РєРѕС‚РѕСЂСѓСЋ Р±СѓРґСѓС‚ СЃРєР»Р°РґС‹РІР°С‚СЊСЃСЏ png С„Р°Р№Р»С‹.</param>
+        /// <param name="originFileNameWithoutExt">РРјСЏ РёР·РЅР°С‡Р°Р»СЊРЅРѕРіРѕ pdf С„Р°Р№Р»Р°, Р±РµР· СЂР°СЃС€РёСЂРµРЅРёСЏ.</param>
         private void CreatePngFilesFromPdf(string mainDirectory, string pngDirectory, string originFileNameWithoutExt)
         {
             string pdfFile = Path.Combine(mainDirectory, originFileNameWithoutExt + ".pdf");
@@ -88,13 +88,13 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
         }
 
         /// <summary>
-        /// Распознает png файлы и сохраняет результат в txt.
+        /// Р Р°СЃРїРѕР·РЅР°РµС‚ png С„Р°Р№Р»С‹ Рё СЃРѕС…СЂР°РЅСЏРµС‚ СЂРµР·СѓР»СЊС‚Р°С‚ РІ txt.
         /// </summary>
-        /// <param name="pngDirectory">Директория с png файлами.</param>
-        /// <param name="recognitionDirectory">Директория для сохранения распознанных файлов.</param>
+        /// <param name="pngDirectory">Р”РёСЂРµРєС‚РѕСЂРёСЏ СЃ png С„Р°Р№Р»Р°РјРё.</param>
+        /// <param name="recognitionDirectory">Р”РёСЂРµРєС‚РѕСЂРёСЏ РґР»СЏ СЃРѕС…СЂР°РЅРµРЅРёСЏ СЂР°СЃРїРѕР·РЅР°РЅРЅС‹С… С„Р°Р№Р»РѕРІ.</param>
         private void RecognizePng(string pngDirectory, string recognitionDirectory)
         {
-            // Получаем список конвертированных png файлов.
+            // РџРѕР»СѓС‡Р°РµРј СЃРїРёСЃРѕРє РєРѕРЅРІРµСЂС‚РёСЂРѕРІР°РЅРЅС‹С… png С„Р°Р№Р»РѕРІ.
             List<string> pngFiles = Directory.GetFiles(pngDirectory).ToList();
 
             foreach (string pngFile in pngFiles)
@@ -129,10 +129,10 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
         }
 
         /// <summary>
-        /// Склеить несколько txt файлов, относящихся к одному pdf документу в один.
+        /// РЎРєР»РµРёС‚СЊ РЅРµСЃРєРѕР»СЊРєРѕ txt С„Р°Р№Р»РѕРІ, РѕС‚РЅРѕСЃСЏС‰РёС…СЃСЏ Рє РѕРґРЅРѕРјСѓ pdf РґРѕРєСѓРјРµРЅС‚Сѓ РІ РѕРґРёРЅ.
         /// </summary>
-        /// <param name="recognitionDirectory">Директория для сохранения распознанных файлов.</param>
-        /// <param name="fileNameWithoutExt">Имя файла, под которым будет сохраняться результат.</param>
+        /// <param name="recognitionDirectory">Р”РёСЂРµРєС‚РѕСЂРёСЏ РґР»СЏ СЃРѕС…СЂР°РЅРµРЅРёСЏ СЂР°СЃРїРѕР·РЅР°РЅРЅС‹С… С„Р°Р№Р»РѕРІ.</param>
+        /// <param name="fileNameWithoutExt">РРјСЏ С„Р°Р№Р»Р°, РїРѕРґ РєРѕС‚РѕСЂС‹Рј Р±СѓРґРµС‚ СЃРѕС…СЂР°РЅСЏС‚СЊСЃСЏ СЂРµР·СѓР»СЊС‚Р°С‚.</param>
         private void MergeTxt(string recognitionDirectory, string fileNameWithoutExt)
         {
             string resultFile = Path.Combine(recognitionDirectory, fileNameWithoutExt + ".txt");
@@ -142,7 +142,7 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
                 System.IO.File.Delete(resultFile);
             }
 
-            // Получаем список распознанных файлов.
+            // РџРѕР»СѓС‡Р°РµРј СЃРїРёСЃРѕРє СЂР°СЃРїРѕР·РЅР°РЅРЅС‹С… С„Р°Р№Р»РѕРІ.
             List<string> txtFiles = Directory.GetFiles(recognitionDirectory, "*.txt").ToList();
             txtFiles.Sort();
 
