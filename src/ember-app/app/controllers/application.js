@@ -20,6 +20,12 @@ export default Controller.extend({
           title: i18n.t('forms.application.sitemap.index.title'),
           children: null
         }, {
+          link: 'main-search-form',
+          icon: 'search',
+          caption: i18n.t('forms.application.sitemap.main-search-form.caption'),
+          title: i18n.t('forms.application.sitemap.main-search-form.title'),
+          children: null
+        }, {
           link: null,
           icon: 'list',
           caption: i18n.t('forms.application.sitemap.reports-ocr-and-search.caption'),

@@ -11,6 +11,8 @@ Router.map(function () {
   { path: 'i-i-s-reports-ocr-and-search-report-e/:id' });
   this.route('i-i-s-reports-ocr-and-search-report-e.new',
   { path: 'i-i-s-reports-ocr-and-search-report-e/new' });
+
+  this.route('main-search-form');
 });
 
 export default Router;
