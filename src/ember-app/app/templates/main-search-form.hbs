@@ -1,0 +1,14 @@
+<h3 class="ui header">{{t "forms.main-search-form.caption"}}</h3>
+
+<form class="ui form flexberry-vertical-form" role="form">
+    <div class="field search">
+        <label class="searchLabel">{{t "forms.main-search-form.searchMessage"}}</label>
+        {{input type="text" class="searchText" value=searchText}}
+        <button type="button" class="search" onclick={{action "runSearch"}}>
+            <i class="icon search"></i>
+        </button>
+    </div>
+    <div class="field">
+        
+    </div>
+</form>

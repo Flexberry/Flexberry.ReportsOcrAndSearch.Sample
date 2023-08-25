@@ -4,6 +4,7 @@ import EmberFlexberryTranslations from 'ember-flexberry/locales/en/translations'
 import IISReportsOcrAndSearchReportLForm from './forms/i-i-s-reports-ocr-and-search-report-l';
 import IISReportsOcrAndSearchReportEForm from './forms/i-i-s-reports-ocr-and-search-report-e';
 import IISReportsOcrAndSearchReportModel from './models/i-i-s-reports-ocr-and-search-report';
+import MainSearchForm from './forms/main-search-form';
 
 const translations = {};
 $.extend(true, translations, EmberFlexberryTranslations);
@@ -84,6 +85,10 @@ $.extend(true, translations, {
             title: '',
           },
         },
+        'main-search-form': {
+          caption: 'Search',
+          title: 'Search',
+        },
       },
     },
 
@@ -97,6 +102,7 @@ $.extend(true, translations, {
     },
     'i-i-s-reports-ocr-and-search-report-l': IISReportsOcrAndSearchReportLForm,
     'i-i-s-reports-ocr-and-search-report-e': IISReportsOcrAndSearchReportEForm,
+    'main-search-form': MainSearchForm,
   },
 
 });
