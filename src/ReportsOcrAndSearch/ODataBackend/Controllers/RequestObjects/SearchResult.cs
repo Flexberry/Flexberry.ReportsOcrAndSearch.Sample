@@ -46,11 +46,11 @@
         /// <param name="totalPages">Всего страниц.</param>
         public SearchResult(string fileName, string uploadKey, string uploadUrl, string pageNumber, string totalPages)
         {
-            FileName = fileName;
-            UploadKey = uploadKey;
-            UploadUrl = uploadUrl;
-            PageNumber = pageNumber;
-            TotalPages = totalPages;
+            this.fileName = fileName;
+            this.uploadKey = uploadKey;
+            this.uploadUrl = uploadUrl;
+            this.pageNumber = pageNumber;
+            this.totalPages = totalPages;
         }
     }
 }

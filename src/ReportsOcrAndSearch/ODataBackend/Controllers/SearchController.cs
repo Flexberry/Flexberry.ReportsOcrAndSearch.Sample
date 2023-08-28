@@ -14,7 +14,7 @@
     [Route("api/[controller]")]
     public class SearchController : Controller
     {
-        private readonly IConfiguration _config;
+        private readonly IConfiguration config;
         private readonly ElasticTools elasticTools = null;
 
         /// <summary>
@@ -23,8 +23,8 @@
         /// <param name="config">Конфигурация.</param>
         public SearchController(IConfiguration config)
         {
-            _config = config;
-            elasticTools = new ElasticTools(_config);
+            this.config = config;
+            elasticTools = new ElasticTools(this.config);
         }
 
         /// <summary>
