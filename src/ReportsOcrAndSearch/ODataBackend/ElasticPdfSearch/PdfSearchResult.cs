@@ -1,4 +1,4 @@
-﻿namespace IIS.ReportsOcrAndSearch.OdataBackend.RequestObjects
+﻿namespace IIS.ReportsOcrAndSearch.ElasticPdfSearch
 {
     /// <summary>
     /// Результат поиска документов.

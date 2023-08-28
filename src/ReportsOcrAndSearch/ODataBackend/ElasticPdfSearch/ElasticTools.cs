@@ -1,9 +1,8 @@
-﻿namespace IIS.ReportsOcrAndSearch.OdataBackend
+﻿namespace IIS.ReportsOcrAndSearch.ElasticPdfSearch
 {
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Text;
-    using IIS.ReportsOcrAndSearch.OdataBackend.RequestObjects;
     using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json.Linq;
 

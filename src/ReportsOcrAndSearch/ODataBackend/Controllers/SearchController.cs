@@ -1,8 +1,7 @@
 ﻿namespace IIS.ReportsOcrAndSearch.Controllers
 {
     using System.Collections.Generic;
-    using IIS.ReportsOcrAndSearch.OdataBackend;
-    using IIS.ReportsOcrAndSearch.OdataBackend.RequestObjects;
+    using IIS.ReportsOcrAndSearch.ElasticPdfSearch;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
