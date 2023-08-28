@@ -9,6 +9,9 @@
         </button>
     </div>
     <div class="field">
-        
+        {{pdf-view
+            startPage = 1
+            pdf="http://localhost:6500/api/file?fileUploadKey=5aac5d07-7c96-4ccd-99ec-7cdc6c70c6a6&fileName=2.pdf" toolbarComponent="pdf-view-toolbar"
+        }}
     </div>
 </form>
