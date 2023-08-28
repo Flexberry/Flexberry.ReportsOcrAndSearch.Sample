@@ -3,6 +3,7 @@
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Text;
+    using System.Web;
     using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json.Linq;
 
@@ -58,10 +59,12 @@
                     foreach (var hit in hits)
                     {
                         var fileInfo = hit.SelectToken("$._source.file");
+                        var uploadKey = fileInfo.Value<string>("upload_key");
+                        var fileName = fileInfo.Value<string>("name");
                         var elem = new PdfSearchResult(
-                            uploadKey: fileInfo.Value<string>("upload_key"),
-                            fileName: fileInfo.Value<string>("name"),
-                            uploadUrl: string.Empty,
+                            uploadKey: uploadKey,
+                            fileName: fileName,
+                            uploadUrl: GetFileUrl(config["BackendRoot"], uploadKey, fileName),
                             pageNumber: fileInfo.Value<string>("pagenumber"),
                             totalPages: fileInfo.Value<string>("totalpages"));
 
@@ -91,6 +94,21 @@
                 new JProperty("_source", "file"));
 
             return jsonBody.ToString();
+        }
+
+        /// <summary>
+        /// Сформировать URL для файла.
+        /// </summary>
+        /// <param name="baseUrl">Базовый URL.</param>
+        /// <param name="fileKey">Ключ файла.</param>
+        /// <param name="fileName">Имя файла.</param>
+        /// <returns>URL для файла.</returns>
+        private static string GetFileUrl(string baseUrl, string fileKey, string fileName)
+        {
+            var fileKeyUrl = HttpUtility.UrlEncode(fileKey);
+            var fileNameUrl = HttpUtility.UrlEncode(fileName);
+
+            return $"{baseUrl}/api/File?fileUploadKey={fileKeyUrl}&fileName={fileNameUrl}";
         }
     }
 }
