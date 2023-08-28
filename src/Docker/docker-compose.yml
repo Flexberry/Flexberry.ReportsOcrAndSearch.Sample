@@ -11,6 +11,7 @@ services:
       - UploadUrl=/var/reportspdf
       - BackendRoot=http://localhost
       - DefConnStr=SERVER=app-postgres-db;User ID=flexberryuser;Password=jhv;Port=5432;database=appdb;
+      - ElasticUrl=http://elasticsearch:9200
     volumes:
       - REPORTSPDF:/var/reportspdf
 
