@@ -1,8 +1,8 @@
 ﻿namespace IIS.ReportsOcrAndSearch.Controllers
 {
     using System.Collections.Generic;
-    using IIS.ReportsOcrAndSearch;
-    using IIS.ReportsOcrAndSearch.Controllers.RequestObjects;
+    using IIS.ReportsOcrAndSearch.OdataBackend;
+    using IIS.ReportsOcrAndSearch.OdataBackend.RequestObjects;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
@@ -35,7 +35,7 @@
         [HttpGet("[action]")]
         public string SearchDocuments([FromQuery] string searchText)
         {
-            List<SearchResult> lst = elasticTools.SearchDocuments(searchText);
+            List<PdfSearchResult> lst = elasticTools.SearchDocuments(searchText);
             string json = JsonConvert.SerializeObject(lst, Formatting.Indented);
 
             return json;

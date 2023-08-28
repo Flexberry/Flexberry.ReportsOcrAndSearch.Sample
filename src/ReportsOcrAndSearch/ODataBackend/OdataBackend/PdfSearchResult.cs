@@ -1,9 +1,9 @@
-﻿namespace IIS.ReportsOcrAndSearch.Controllers.RequestObjects
+﻿namespace IIS.ReportsOcrAndSearch.OdataBackend.RequestObjects
 {
     /// <summary>
     /// Результат поиска документов.
     /// </summary>
-    public class SearchResult
+    public class PdfSearchResult
     {
         private string fileName;
         private string uploadKey;
@@ -44,7 +44,7 @@
         /// <param name="uploadUrl">Путь загрузки файла.</param>
         /// <param name="pageNumber">Номер страницы.</param>
         /// <param name="totalPages">Всего страниц.</param>
-        public SearchResult(string fileName, string uploadKey, string uploadUrl, string pageNumber, string totalPages)
+        public PdfSearchResult(string fileName, string uploadKey, string uploadUrl, string pageNumber, string totalPages)
         {
             this.fileName = fileName;
             this.uploadKey = uploadKey;

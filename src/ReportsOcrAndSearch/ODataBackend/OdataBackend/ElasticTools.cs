@@ -1,9 +1,9 @@
-﻿namespace IIS.ReportsOcrAndSearch
+﻿namespace IIS.ReportsOcrAndSearch.OdataBackend
 {
     using System.Collections.Generic;
     using System.Net.Http;
     using System.Text;
-    using IIS.ReportsOcrAndSearch.Controllers.RequestObjects;
+    using IIS.ReportsOcrAndSearch.OdataBackend.RequestObjects;
     using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json.Linq;
 
@@ -29,11 +29,11 @@
         /// </summary>
         /// <param name="searchText">Текст для поиска.</param>
         /// <returns>Результаты поиска.</returns>
-        public List<SearchResult> SearchDocuments(string searchText)
+        public List<PdfSearchResult> SearchDocuments(string searchText)
         {
             var sendResultUrl = config["ElasticUrl"] + "/" + _indexName + "/_search";
             var buffer = Encoding.UTF8.GetBytes(GetJsonQuery(searchText));
-            var resultList = new List<SearchResult>();
+            var resultList = new List<PdfSearchResult>();
 
             using (var byteContent = new ByteArrayContent(buffer))
             {
@@ -59,7 +59,7 @@
                     foreach (var hit in hits)
                     {
                         var fileInfo = hit.SelectToken("$._source.file");
-                        var elem = new SearchResult(
+                        var elem = new PdfSearchResult(
                             uploadKey: fileInfo.Value<string>("upload_key"),
                             fileName: fileInfo.Value<string>("name"),
                             uploadUrl: string.Empty,
