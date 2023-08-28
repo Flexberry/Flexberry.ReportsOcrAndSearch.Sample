@@ -1,7 +1,6 @@
-﻿namespace IIS.ReportsOcrAndSearch.Controllers
+﻿namespace IIS.ReportsOcrAndSearch
 {
     using System.Collections.Generic;
-    using System.Linq;
     using System.Net.Http;
     using System.Text;
     using IIS.ReportsOcrAndSearch.Controllers.RequestObjects;
@@ -14,7 +13,7 @@
     public class ElasticTools
     {
         private const string _indexName = "documents-index";
-        private readonly IConfiguration _config;
+        private readonly IConfiguration config;
 
         /// <summary>
         /// Поиск документов в эластике.
@@ -22,7 +21,7 @@
         /// <param name="config">Конфигурация.</param>
         public ElasticTools(IConfiguration config)
         {
-            _config = config;
+            this.config = config;
         }
 
         /// <summary>
@@ -32,7 +31,7 @@
         /// <returns>Результаты поиска.</returns>
         public List<SearchResult> SearchDocuments(string searchText)
         {
-            var sendResultUrl = _config["ElasticUrl"] + "/" + _indexName + "/_search";
+            var sendResultUrl = config["ElasticUrl"] + "/" + _indexName + "/_search";
             var buffer = Encoding.UTF8.GetBytes(GetJsonQuery(searchText));
             var resultList = new List<SearchResult>();
 

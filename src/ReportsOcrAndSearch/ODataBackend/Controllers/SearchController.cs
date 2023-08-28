@@ -1,7 +1,7 @@
 ﻿namespace IIS.ReportsOcrAndSearch.Controllers
 {
     using System.Collections.Generic;
-    using System.Threading.Tasks;
+    using IIS.ReportsOcrAndSearch;
     using IIS.ReportsOcrAndSearch.Controllers.RequestObjects;
     using Microsoft.AspNetCore.Mvc;
     using Microsoft.Extensions.Configuration;
@@ -35,8 +35,8 @@
         [HttpGet("[action]")]
         public string SearchDocuments([FromQuery] string searchText)
         {
-            var lst = elasticTools.SearchDocuments(searchText);
-            var json = JsonConvert.SerializeObject(lst, Formatting.Indented);
+            List<SearchResult> lst = elasticTools.SearchDocuments(searchText);
+            string json = JsonConvert.SerializeObject(lst, Formatting.Indented);
 
             return json;
         }
