@@ -5,7 +5,7 @@
     /// <summary>
     /// Запросы к Elastic.
     /// </summary>
-    public class Request
+    public static class Request
     {
         /// <summary>
         /// Отправка Get-запроса.

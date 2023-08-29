@@ -4,7 +4,6 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
     using Microsoft.AspNetCore.Mvc;
     using System;
     using System.Diagnostics;
-    using static System.Runtime.InteropServices.JavaScript.JSType;
 
     /// <summary>
     /// Контроллер, обрабаывающий запросы на распознавание файлов.
@@ -163,7 +162,7 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
 
             if (txtFiles.Count == 0)
             {
-                throw new ArgumentOutOfRangeException("File to Elastic sended error! Recognized files not found.");
+                throw new ArgumentOutOfRangeException("txtFiles.Count");
             }
 
             ElasticTools elasticTools = new ElasticTools(config);
@@ -183,7 +182,7 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
             {
                 try
                 {
-                    string response = elasticTools.SendFileContent(existingFile, uploadKey, totalPages);
+                    elasticTools.SendFileContent(existingFile, uploadKey, totalPages);
                 }
                 catch (Exception ex)
                 {
