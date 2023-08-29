@@ -37,20 +37,20 @@ export default Controller.extend({
     showResults: false,
 
     actions: {
-        runSearch() {
+        runSearch(searchText) {
             let appState = this.get('appState');
             let self = this;
 
-            if (!isEmpty(this.searchText)) {
+            if (!isEmpty(searchText)) {
                 appState.loading();
                 set(this, 'showResults', false);
-                set(this, 'searchResults', undefined);
+                set(this, 'searchResults', []);
 
                 $.ajax({
                     async: true,
                     cache: false,
                     type: 'GET',
-                    url: `${config.APP.backendUrls.search}/SearchDocuments?searchText=${self.searchText}`,
+                    url: `${config.APP.backendUrls.search}/SearchDocuments?searchText=${searchText}`,
                     dataType: 'json',
                     success(response) {
                         if (response != null && response.length > 0) {

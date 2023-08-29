@@ -4,7 +4,7 @@
     <div class="field search">
         <label class="searchLabel">{{t "forms.main-search-form.searchMessage"}}</label>
         {{input type="text" class="searchText" value=searchText}}
-        <button type="button" class="search" onclick={{action "runSearch"}}>
+        <button type="button" class="search" onclick={{action "runSearch" searchText}}>
             <i class="icon search"></i>
         </button>
     </div>
