@@ -12,7 +12,9 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
     [Route("api/[controller]/[action]")]
     public class OcrRecognizer : ControllerBase
     {
-
+        /// <summary>
+        /// Настройки для отправки распознанных файлов в Elastic.
+        /// </summary>
         private readonly IConfiguration config;
 
         /// <summary>
@@ -160,11 +162,6 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
             txtFiles.Sort();
             int totalPages = txtFiles.Count;
 
-            if (txtFiles.Count == 0)
-            {
-                throw new ArgumentOutOfRangeException("txtFiles.Count");
-            }
-
             ElasticTools elasticTools = new ElasticTools(config);
 
             try
@@ -177,7 +174,6 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
                 throw new HttpRequestException("File to Elastic sended error!\n" + ex.Message);
             }
             
-
             foreach (string existingFile in txtFiles)
             {
                 try
