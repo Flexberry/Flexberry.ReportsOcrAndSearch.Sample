@@ -8,10 +8,13 @@
             <i class="icon search"></i>
         </button>
     </div>
-    <div class="field">
-        {{pdf-view
-            startPage = 1
-            pdf="http://localhost:6500/api/file?fileUploadKey=5aac5d07-7c96-4ccd-99ec-7cdc6c70c6a6&fileName=2.pdf" toolbarComponent="pdf-view-toolbar"
-        }}
+    <div class="field searchResults">
+        {{#if showResults}}
+        {{#each searchResults as |result|}}
+            <div class="field searchResult">
+                {{result.index}}) Результат, <b>{{result.FileName}}</b>. Номер страницы, <b>{{result.PageNumber}}</b> из <b>{{result.TotalPages}}</b>. <a class="documentLink" href="{{result.UploadUrl}}">Ссылка</a>
+            </div>
+        {{/each}}
+        {{/if}}
     </div>
 </form>

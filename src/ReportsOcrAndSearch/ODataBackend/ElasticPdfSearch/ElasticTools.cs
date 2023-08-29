@@ -31,7 +31,7 @@
         /// <returns>Результаты поиска.</returns>
         public List<PdfSearchResult> SearchDocuments(string searchText)
         {
-            var sendResultUrl = config["ElasticUrl"] + "/" + _indexName + "/_search";
+            var sendResultUrl = $"{config["ElasticUrl"]}/{_indexName}/_search";
             var buffer = Encoding.UTF8.GetBytes(GetJsonQuery(searchText));
             var resultList = new List<PdfSearchResult>();
 
