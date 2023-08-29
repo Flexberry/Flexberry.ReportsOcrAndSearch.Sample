@@ -66,7 +66,7 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
             catch (Exception ex)
             {
 
-                return BadRequest("File to Elastic sended error.\n" + ex.Message); ;
+                return BadRequest("File to Elastic sended error.\n" + ex.Message);
             }
             
             return Ok("Recognition completed");
@@ -163,7 +163,7 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
 
             if (txtFiles.Count == 0)
             {
-                throw new Exception("File to Elastic sended error. Recognized files not found");
+                throw new ArgumentOutOfRangeException("File to Elastic sended error! Recognized files not found.");
             }
 
             ElasticTools elasticTools = new ElasticTools(config);
@@ -175,7 +175,7 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
             catch (Exception ex)
             {
 
-                throw new Exception("File to Elastic sended error.\n" + ex.Message);
+                throw new HttpRequestException("File to Elastic sended error!\n" + ex.Message);
             }
             
 
@@ -188,7 +188,7 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Не удалось отправить в Elasticsearch '{config["ElasticUrl"]}' информацию по файлу '{existingFile}'.\n{ex}");
-                    throw new Exception($"File '{existingFile}' to Elastic sended error.\n" + ex.Message);
+                    throw new HttpRequestException($"File '{existingFile}' to Elastic sended error!\n" + ex.Message);
                 }
             }
         }

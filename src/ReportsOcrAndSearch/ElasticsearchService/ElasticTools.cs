@@ -47,11 +47,11 @@
 
             try
             {
-                return new Request().SendPutRequest(connectionConfig["ElasticUrl"], requestURL, jsonData);
+                return Request.SendPutRequest(connectionConfig["ElasticUrl"] ?? "", requestURL, jsonData);
             }
             catch (Exception ex)
             {
-                throw new Exception("Pipeline attachment configutated error!\n" + ex.Message);
+                throw new HttpRequestException("Pipeline attachment configutated error!\n" + ex.Message);
             }        
         }
 
@@ -77,10 +77,10 @@
             catch (Exception ex)
             {
                 Console.WriteLine($"Не могу распознать номер страницы из '{parseString}'.\n {ex}");
-                throw new Exception("File content sended error!\n" + ex.Message);
+                throw new ArgumentException("File content sended error! Page number not valid.\n" + ex.Message);
             }
 
-            string documentIndex = connectionConfig["ElasticDocumentsIndex"];
+            string documentIndex = connectionConfig["ElasticDocumentsIndex"] ?? "";
             string requestURL = $"{documentIndex}/_doc/{uploadKey}_{pageNumber}?pipeline=attachment";
 
             FileInfo fileInfo = new FileInfo(
@@ -101,14 +101,14 @@
 
             try
             {
-                string response = new Request().SendPutRequest(connectionConfig["ElasticUrl"], requestURL, jsonData);
+                string response = Request.SendPutRequest(connectionConfig["ElasticUrl"] ?? "", requestURL, jsonData);
                 Console.WriteLine($"Файл успешно загружен в Elastic. Доступ по адресу: {documentIndex}/_doc/{uploadKey}_{pageNumber}");
                 return response;
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Ошибка Put-запроса: \n" + ex.Message);
-                throw new Exception("File content sended error!\n" + ex.Message);
+                throw new HttpRequestException("File content sended error!\n" + ex.Message);
             }
         }
     }
