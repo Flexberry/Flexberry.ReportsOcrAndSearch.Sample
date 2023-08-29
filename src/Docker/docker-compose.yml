@@ -30,7 +30,7 @@ services:
       - 6600:80
     environment:
       - ElasticUrl=http://elasticsearch:9200
-      - ElasticDocumentsIndex=my-attachment-index-01
+      - ElasticDocumentsIndex=pdf-documents
 
   elasticsearch:
     image: reportsocrandsearch/elasticsearch

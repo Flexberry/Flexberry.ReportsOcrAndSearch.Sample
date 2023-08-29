@@ -4,6 +4,7 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
     using Microsoft.AspNetCore.Mvc;
     using System;
     using System.Diagnostics;
+    using static System.Runtime.InteropServices.JavaScript.JSType;
 
     /// <summary>
     /// Контроллер, обрабаывающий запросы на распознавание файлов.
@@ -13,7 +14,7 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
     public class OcrRecognizer : ControllerBase
     {
 
-        private readonly IConfiguration _config;
+        private readonly IConfiguration config;
 
         /// <summary>
         /// Конструктор класса.
@@ -21,7 +22,7 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
         /// <param name="config">Настройки для отправки распознанных файлов в Elastic.</param>
         public OcrRecognizer(IConfiguration config)
         {
-            _config = config;
+            this.config = config;
         }
 
         /// <summary>
@@ -65,7 +66,7 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
             catch (Exception ex)
             {
 
-                return BadRequest("Ошибка отправки распознанных файлов в Elastic.\n" + ex.Message); ;
+                return BadRequest("File to Elastic sended error.\n" + ex.Message); ;
             }
             
             return Ok("Recognition completed");
@@ -162,25 +163,33 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
 
             if (txtFiles.Count == 0)
             {
-                throw new Exception("Merge txt error. Recognized files not found");
+                throw new Exception("File to Elastic sended error. Recognized files not found");
             }
 
-            ConnectionConfig connectionConfig = new ConnectionConfig(
-                baseUrl: _config["ElasticUrl"],
-                attachmentIndex: _config["ElasticDocumentsIndex"]);
-            ElasticsearchAPI api = new ElasticsearchAPI(connectionConfig);
-            api.ConfiguratePipelineAttachmentAsync();
+            ElasticTools elasticTools = new ElasticTools(config);
+
+            try
+            {
+                elasticTools.ConfiguratePipelineAttachment();
+            }
+            catch (Exception ex)
+            {
+
+                throw new Exception("File to Elastic sended error.\n" + ex.Message);
+            }
+            
 
             foreach (string existingFile in txtFiles)
             {
                 try
                 {
-                    string response = api.SendFileContent(existingFile, uploadKey, totalPages);
+                    string response = elasticTools.SendFileContent(existingFile, uploadKey, totalPages);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Не удалось отправить в Elasticsearch '{_config["ElasticUrl"]}' информацию по файлу '{existingFile}'.\n{ex}");
-                }  
+                    Console.WriteLine($"Не удалось отправить в Elasticsearch '{config["ElasticUrl"]}' информацию по файлу '{existingFile}'.\n{ex}");
+                    throw new Exception($"File '{existingFile}' to Elastic sended error.\n" + ex.Message);
+                }
             }
         }
     }
