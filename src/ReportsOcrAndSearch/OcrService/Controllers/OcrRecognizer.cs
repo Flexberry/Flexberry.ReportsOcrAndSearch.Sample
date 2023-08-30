@@ -170,7 +170,7 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine($"Не удалось сконфигурировать конвейер для загрузки файла.\n" + ex.Message);
                 throw new HttpRequestException("File to Elastic sended error!\n" + ex.Message);
             }
             
@@ -182,7 +182,7 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine($"Не удалось отправить в Elasticsearch '{config["ElasticUrl"]}' информацию по файлу '{existingFile}'.\n{ex}");
+                    Console.WriteLine($"Не удалось отправить в Elasticsearch '{config["ElasticUrl"]}' информацию по файлу '{existingFile}'.\n" + ex.Message);
                     throw new HttpRequestException($"File '{existingFile}' to Elastic sended error!\n" + ex.Message);
                 }
             }

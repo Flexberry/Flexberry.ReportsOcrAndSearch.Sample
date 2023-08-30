@@ -3,6 +3,7 @@
     using ElasticsearchService.Entities;
     using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Linq;
     using System.Configuration;
 
     /// <summary>
@@ -29,21 +30,20 @@
         /// </summary>
         public void ConfiguratePipelineAttachment()
         {
-            string requestURL = "_ingest/pipeline/attachment";
+            string requestUrl = "_ingest/pipeline/attachment";
 
             // Поле field должно иметь значение как имя поля в методе SendFileContent
-            string jsonData = """
-                {
-                    "description": "Recognized files",
-                    "processors": [
-                        {
-                            "attachment": {
-                                "field": "data"
-                            }
-                        }
-                    ]
-                }
-                """;
+            JObject jsonBody = new JObject(
+                new JProperty("description", "Recognized files"),
+                new JProperty(
+                    "processors", 
+                    new JArray(
+                        new JObject(
+                            new JProperty(
+                                "attachment", 
+                                new JObject(
+                                    new JProperty("field", "data")))))));
+            string jsonData = jsonBody.ToString(); 
 
             string elasticUrl = connectionConfig["ElasticUrl"];
             if (string.IsNullOrEmpty(elasticUrl))
@@ -53,7 +53,7 @@
 
             try
             {
-                Request.SendPutRequest(elasticUrl, requestURL, jsonData);
+                Request.SendPutRequest(elasticUrl, requestUrl, jsonData);
             }
             catch (Exception ex)
             {
@@ -91,7 +91,8 @@
                 throw new ConfigurationErrorsException("ElasticDocumentsIndex is not specified in Configuration or enviromnent variables.");
             }
 
-            string requestURL = $"{documentIndex}/_doc/{uploadKey}_{pageNumber}?pipeline=attachment";
+            string fileUrl = $"{documentIndex}/_doc/{uploadKey}_{pageNumber}";
+            string requestURL = $"{fileUrl}?pipeline=attachment";
 
             FileInfo fileInfo = new FileInfo(
                 name: Path.GetFileName(fileName),
@@ -102,12 +103,10 @@
             byte[] fileBytes = System.IO.File.ReadAllBytes(fileName);
 
             // Имя поля "data" должно совпадать со значением "field", заданным в методе ConfiguratePipelineAttachment
-            string jsonData = $$"""
-                {
-                    "data": "{{Convert.ToBase64String(fileBytes)}}",
-                    "file": {{JsonConvert.SerializeObject(fileInfo)}}
-                }
-                """;
+            JObject jsonBody = new JObject(
+                new JProperty("data", Convert.ToBase64String(fileBytes)),
+                new JProperty("file", JObject.Parse(JsonConvert.SerializeObject(fileInfo))));
+            string jsonData = jsonBody.ToString();
 
             string elasticUrl = connectionConfig["ElasticUrl"];
             if (string.IsNullOrEmpty(elasticUrl))
@@ -118,7 +117,7 @@
             try
             {
                 Request.SendPutRequest(elasticUrl, requestURL, jsonData);
-                Console.WriteLine($"Файл успешно загружен в Elastic. Доступ по адресу: {documentIndex}/_doc/{uploadKey}_{pageNumber}");
+                Console.WriteLine($"Файл успешно загружен в Elastic. Доступ по адресу: {fileUrl}");
             }
             catch (Exception ex)
             {

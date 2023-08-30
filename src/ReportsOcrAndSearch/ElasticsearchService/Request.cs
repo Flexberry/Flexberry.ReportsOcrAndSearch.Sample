@@ -11,9 +11,9 @@
         /// Отправка Put-запроса.
         /// </summary>
         /// <param name="baseUrl">Адрес сервера.</param>
-        /// <param name="requestURL">URL запроса.</param>
+        /// <param name="requestUrl">URL запроса.</param>
         /// <param name="jsonData">Отправляемые данные в JSON-формате.</param>
-        public static void SendPutRequest(string baseUrl, string requestURL, string jsonData)
+        public static void SendPutRequest(string baseUrl, string requestUrl, string jsonData)
         {
             using (HttpClient client = new HttpClient())
             {
@@ -22,14 +22,13 @@
 
                 try
                 {
-                    using (HttpResponseMessage response = client.PutAsync(new Uri(baseAddress, requestURL), httpContent).Result)
+                    using (HttpResponseMessage response = client.PutAsync(new Uri(baseAddress, requestUrl), httpContent).Result)
                     {
                         response.EnsureSuccessStatusCode();
                     }
                 }
                 catch (Exception ex)
                 {
-
                     throw new HttpRequestException("Put request sended error!\n" + ex.Message);
                 }           
             }
