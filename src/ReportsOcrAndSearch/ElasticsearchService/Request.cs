@@ -30,7 +30,7 @@
                 catch (Exception ex)
                 {
 
-                    throw new HttpRequestException("Put request sended error!\n" + ex.Message); ;
+                    throw new HttpRequestException("Put request sended error!\n" + ex.Message);
                 }           
             }
         }

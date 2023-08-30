@@ -3,6 +3,7 @@
     using ElasticsearchService.Entities;
     using Microsoft.Extensions.Configuration;
     using Newtonsoft.Json;
+    using System.Configuration;
 
     /// <summary>
     /// Методы для взаимодействия с Elastic.
@@ -45,9 +46,9 @@
                 """;
 
             string elasticUrl = connectionConfig["ElasticUrl"];
-            if (elasticUrl == null)
+            if (string.IsNullOrEmpty(elasticUrl))
             {
-                throw new ArgumentNullException(elasticUrl);
+                throw new ConfigurationErrorsException("ElasticUrl is not specified in Configuration or enviromnent variables.");
             }
 
             try
@@ -85,9 +86,9 @@
             }
 
             string documentIndex = connectionConfig["ElasticDocumentsIndex"];
-            if (documentIndex == null)
+            if (string.IsNullOrEmpty(documentIndex))
             {
-                throw new ArgumentNullException(documentIndex);
+                throw new ConfigurationErrorsException("ElasticDocumentsIndex is not specified in Configuration or enviromnent variables.");
             }
 
             string requestURL = $"{documentIndex}/_doc/{uploadKey}_{pageNumber}?pipeline=attachment";
@@ -109,9 +110,9 @@
                 """;
 
             string elasticUrl = connectionConfig["ElasticUrl"];
-            if (elasticUrl == null)
+            if (string.IsNullOrEmpty(elasticUrl))
             {
-                throw new ArgumentNullException(elasticUrl);
+                throw new ConfigurationErrorsException("ElasticUrl is not specified in Configuration or enviromnent variables.");
             }
 
             try
