@@ -93,6 +93,11 @@
                 endpoints.MapHealthChecks("/health");
             });
 
+            app.UseMvc(builder =>
+            {
+                builder.MapFileRoute();
+            });
+
             app.UseODataService(builder =>
             {
                 builder.MapFileRoute();
