@@ -8,22 +8,22 @@
         /// <summary>
         /// Имя файла.
         /// </summary>
-        public string? name { get; set; }
+        public string FileName { get; set; }
 
         /// <summary>
         /// Уникальный ключ загруженного файла.
         /// </summary>
-        public string? uploadKey { get; set; }
+        public string UploadKey { get; set; }
 
         /// <summary>
         /// Номер страницы.
         /// </summary>
-        public int? pageNumber { get; set; }
+        public int PageNumber { get; set; }
 
         /// <summary>
         /// Общее количество страниц.
         /// </summary>
-        public int? totalPages { get; set; }
+        public int TotalPages { get; set; }
 
         /// <summary>
         /// Конструктор класса
@@ -34,10 +34,10 @@
         /// <param name="totalPages">Общее количество страниц.</param>
         public FileInfo(string name, string uploadKey, int pageNumber, int totalPages)
         {
-            this.name = name;
-            this.uploadKey = uploadKey;
-            this.pageNumber = pageNumber;
-            this.totalPages = totalPages;
+            FileName = name;
+            UploadKey = uploadKey;
+            PageNumber = pageNumber;
+            TotalPages = totalPages;
         }
     }
 }

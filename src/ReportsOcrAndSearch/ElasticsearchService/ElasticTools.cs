@@ -26,8 +26,7 @@
         /// <summary>
         /// Настройка конвейера для загрузки файлов в Elastic.
         /// </summary>
-        /// <returns>Ответ от Elastic.</returns>
-        public string ConfiguratePipelineAttachment()
+        public void ConfiguratePipelineAttachment()
         {
             string requestURL = "_ingest/pipeline/attachment";
 
@@ -45,9 +44,15 @@
                 }
                 """;
 
+            string elasticUrl = connectionConfig["ElasticUrl"];
+            if (elasticUrl == null)
+            {
+                throw new ArgumentNullException(elasticUrl);
+            }
+
             try
             {
-                return Request.SendPutRequest(connectionConfig["ElasticUrl"] ?? "", requestURL, jsonData);
+                Request.SendPutRequest(elasticUrl, requestURL, jsonData);
             }
             catch (Exception ex)
             {
@@ -64,8 +69,7 @@
         /// <param name="fileName">Полное имя файла, связанного с одной страницей распознаваемого документа.</param>
         /// <param name="uploadKey">Уникальный ключ загружаемого файла.</param>
         /// <param name="totalPages">Общее количество страниц в распознаваемом документе.</param>
-        /// <returns>Ответ от Elastic.</returns>
-        public string SendFileContent(string fileName, string uploadKey, int totalPages)
+        public void SendFileContent(string fileName, string uploadKey, int totalPages)
         {
             string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
             string parseString = fileNameWithoutExtension.Substring(fileNameWithoutExtension.LastIndexOf("-") + 1);
@@ -80,7 +84,12 @@
                 throw new ArgumentException("File content sended error! Page number not valid.\n" + ex.Message);
             }
 
-            string documentIndex = connectionConfig["ElasticDocumentsIndex"] ?? "";
+            string documentIndex = connectionConfig["ElasticDocumentsIndex"];
+            if (documentIndex == null)
+            {
+                throw new ArgumentNullException(documentIndex);
+            }
+
             string requestURL = $"{documentIndex}/_doc/{uploadKey}_{pageNumber}?pipeline=attachment";
 
             FileInfo fileInfo = new FileInfo(
@@ -99,11 +108,16 @@
                 }
                 """;
 
+            string elasticUrl = connectionConfig["ElasticUrl"];
+            if (elasticUrl == null)
+            {
+                throw new ArgumentNullException(elasticUrl);
+            }
+
             try
             {
-                string response = Request.SendPutRequest(connectionConfig["ElasticUrl"] ?? "", requestURL, jsonData);
+                Request.SendPutRequest(elasticUrl, requestURL, jsonData);
                 Console.WriteLine($"Файл успешно загружен в Elastic. Доступ по адресу: {documentIndex}/_doc/{uploadKey}_{pageNumber}");
-                return response;
             }
             catch (Exception ex)
             {
