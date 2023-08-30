@@ -17,14 +17,21 @@
         {
             using (HttpClient client = new HttpClient())
             {
-                client.BaseAddress = new Uri(baseUrl);
-
+                Uri baseAddress = new Uri(baseUrl);
                 HttpContent httpContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
-                
-                using (HttpResponseMessage response = client.PutAsync(new Uri(requestURL), httpContent).Result)
+
+                try
                 {
-                    response.EnsureSuccessStatusCode();
+                    using (HttpResponseMessage response = client.PutAsync(new Uri(baseAddress, requestURL), httpContent).Result)
+                    {
+                        response.EnsureSuccessStatusCode();
+                    }
                 }
+                catch (Exception ex)
+                {
+
+                    throw new HttpRequestException("Put request sended error!\n" + ex.Message); ;
+                }           
             }
         }
     }
