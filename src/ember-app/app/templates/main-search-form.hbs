@@ -12,7 +12,9 @@
         {{#if showResults}}
         {{#each searchResults as |result|}}
             <div class="field searchResult">
-                {{result.index}}) Результат, <b>{{result.FileName}}</b>. Номер страницы, <b>{{result.PageNumber}}</b> из <b>{{result.TotalPages}}</b>. <a class="documentLink" href="{{result.UploadUrl}}">Ссылка</a>
+                {{result.index}}) Результат, <b>{{result.FileName}}</b>. Номер страницы, <b>{{result.PageNumber}}</b> из <b>{{result.TotalPages}}</b>. 
+                <a class="documentLink" href="{{result.UploadUrl}}">Ссылка</a>
+                <button type="button" class="ui button" {{action "showModal" result.UploadUrl}}>Просмотр</button>
             </div>
         {{/each}}
         {{/if}}
