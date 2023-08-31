@@ -33,5 +33,32 @@
                 }           
             }
         }
+
+        /// <summary>
+        /// Отправка Post-запроса.
+        /// </summary>
+        /// <param name="baseUrl">Адрес сервера.</param>
+        /// <param name="requestUrl">URL запроса.</param>
+        /// <param name="jsonData">Отправляемые данные в JSON-формате.</param>
+        public static void SendPostRequest(string baseUrl, string requestUrl, string jsonData)
+        {
+            using (HttpClient client = new HttpClient())
+            {
+                Uri baseAddress = new Uri(baseUrl);
+                HttpContent httpContent = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                try
+                {
+                    using (HttpResponseMessage response = client.PostAsync(new Uri(baseAddress, requestUrl), httpContent).Result)
+                    {
+                        response.EnsureSuccessStatusCode();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new HttpRequestException("Post request sended error!\n" + ex.Message);
+                }
+            }
+        }
     }
 }
