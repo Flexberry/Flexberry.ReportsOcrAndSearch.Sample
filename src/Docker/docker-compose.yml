@@ -28,6 +28,9 @@ services:
       - REPORTSPDF:/var/reportspdf
     ports:
       - 6600:80
+    environment:
+      - ElasticUrl=http://elasticsearch:9200
+      - ElasticDocumentsIndex=pdf-documents
 
   elasticsearch:
     image: reportsocrandsearch/elasticsearch
