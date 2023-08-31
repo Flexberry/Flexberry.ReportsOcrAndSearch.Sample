@@ -12,8 +12,8 @@
     /// </summary>
     public class ElasticTools
     {
-        private const string _indexName = "documents-index";
         private readonly IConfiguration config;
+        private readonly string indexName = "documents";
 
         /// <summary>
         /// Поиск документов в эластике.
@@ -22,6 +22,8 @@
         public ElasticTools(IConfiguration config)
         {
             this.config = config;
+
+            indexName = config["ElasticDocumentsIndex"];
         }
 
         /// <summary>
@@ -31,7 +33,7 @@
         /// <returns>Результаты поиска.</returns>
         public List<PdfSearchResult> SearchDocuments(string searchText)
         {
-            var sendResultUrl = $"{config["ElasticUrl"]}/{_indexName}/_search";
+            var sendResultUrl = $"{config["ElasticUrl"]}/{indexName}/_search";
             var buffer = Encoding.UTF8.GetBytes(GetJsonQuery(searchText));
             var resultList = new List<PdfSearchResult>();
 
