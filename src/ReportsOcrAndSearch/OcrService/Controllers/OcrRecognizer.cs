@@ -1,5 +1,6 @@
 namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
 {
+    using ElasticsearchService;
     using Microsoft.AspNetCore.Mvc;
     using System;
     using System.Diagnostics;
@@ -12,6 +13,20 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
     public class OcrRecognizer : ControllerBase
     {
         /// <summary>
+        /// Настройки для отправки распознанных файлов в Elastic.
+        /// </summary>
+        private readonly IConfiguration config;
+
+        /// <summary>
+        /// Конструктор класса.
+        /// </summary>
+        /// <param name="config">Настройки для отправки распознанных файлов в Elastic.</param>
+        public OcrRecognizer(IConfiguration config)
+        {
+            this.config = config;
+        }
+
+        /// <summary>
         /// Метод, обрабатывающий Post-запрос на распознавание указанного pdf файла. После распознавания файл отправляется в ElasticSearch.
         /// Пример запроса - http://localhost:6600/api/OcrRecognizer/RunRecognizeUploadedPdf?uploadDirectory=...&uploadKey=...&fileName=...
         /// </summary>
@@ -21,7 +36,6 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
         [HttpPost]
         public IActionResult RunRecognizeUploadedPdf(string uploadDirectory, string uploadKey, string fileName)
         {
-
             if (!System.IO.File.Exists(Path.Combine(uploadDirectory, uploadKey, fileName)))
             {
                 return BadRequest("Recognition error: File not found");
@@ -39,15 +53,21 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
             {
                 CreatePngFilesFromPdf(fileDirectory, pngDirectory, fileNameWithoutExt);
                 RecognizePng(pngDirectory, recognitionDirectory);
-                MergeTxt(recognitionDirectory, fileNameWithoutExt);
             }
             catch (Exception ex)
             {
                 return BadRequest("Recognition error: " + ex.Message);
             }
 
-            // Отправить распознанный и склеенный fileNameWithoutExt .txt в Elastic.
-
+            try
+            {
+                sendToElasticsearch(recognitionDirectory, uploadKey);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest("File to Elastic sended error.\n" + ex.Message);
+            }
+            
             return Ok("Recognition completed");
         }
 
@@ -100,7 +120,7 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
             foreach (string pngFile in pngFiles)
             {
                 string pngFileName = Path.GetFileNameWithoutExtension(pngFile);
-                string resultFile = Path.Combine(recognitionDirectory, pngFileName + "_result");
+                string resultFile = Path.Combine(recognitionDirectory, pngFileName);
 
                 var convertPdfToPngProcess = new Process()
                 {
@@ -129,36 +149,39 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
         }
 
         /// <summary>
-        /// Склеить несколько txt файлов, относящихся к одному pdf документу в один.
+        /// Отправка распознанных текстовых файлов в Elastic. 
         /// </summary>
-        /// <param name="recognitionDirectory">Директория для сохранения распознанных файлов.</param>
-        /// <param name="fileNameWithoutExt">Имя файла, под которым будет сохраняться результат.</param>
-        private void MergeTxt(string recognitionDirectory, string fileNameWithoutExt)
+        /// <param name="recognitionDirectory">Директория с распознанными файлами.</param>
+        /// <param name="uploadKey">GUID загрузки.</param>
+        private void sendToElasticsearch(string recognitionDirectory, string uploadKey)
         {
-            string resultFile = Path.Combine(recognitionDirectory, fileNameWithoutExt + ".txt");
-
-            if (System.IO.File.Exists(resultFile))
-            {
-                System.IO.File.Delete(resultFile);
-            }
-
             // Получаем список распознанных файлов.
             List<string> txtFiles = Directory.GetFiles(recognitionDirectory, "*.txt").ToList();
             txtFiles.Sort();
+            int totalPages = txtFiles.Count;
 
-            if (txtFiles.Count == 0)
+            ElasticTools elasticTools = new ElasticTools(config);
+
+            try
             {
-                throw new Exception("Merge txt error. Recognized files not found");
+                elasticTools.ConfiguratePipelineAttachment();
             }
-
-            using (FileStream output = System.IO.File.Create(resultFile))
+            catch (Exception ex)
             {
-                foreach (string existingFile in txtFiles)
+                Console.WriteLine($"Не удалось сконфигурировать конвейер для загрузки файла.\n" + ex.Message);
+                throw new HttpRequestException("File to Elastic sended error!\n" + ex.Message);
+            }
+            
+            foreach (string existingFile in txtFiles)
+            {
+                try
                 {
-                    using (FileStream input = System.IO.File.OpenRead(existingFile))
-                    {
-                        input.CopyTo(output);
-                    }
+                    elasticTools.SendFileContent(existingFile, uploadKey, totalPages);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Не удалось отправить в Elasticsearch '{config["ElasticUrl"]}' информацию по файлу '{existingFile}'.\n" + ex.Message);
+                    throw new HttpRequestException($"File '{existingFile}' to Elastic sended error!\n" + ex.Message);
                 }
             }
         }
