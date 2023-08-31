@@ -1,24 +1,26 @@
 ﻿namespace IIS.ReportsOcrAndSearch
 {
     using System;
-    using System.IO;
+    using System.Configuration;
+    using System.Net.Http;
     using System.Text.RegularExpressions;
     using ICSSoft.STORMNET;
+    using Microsoft.Extensions.Configuration;
 
     /// <summary>
     /// Класс для сохрания pdf файла в общее файловое хранилище и отправки запроса в OCR.
     /// </summary>
     public class FileTransferToOcr : IDataObjectUpdateHandler
     {
-        private string fileUploadPath;
+        private readonly IConfiguration config;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileTransferToOcr"/> class.
+        /// Конструктор класса.
         /// </summary>
-        /// <param name="fileUploadPath">Путь в общем хранилище, которое доступно OCR сервису.</param>
-        public FileTransferToOcr(string fileUploadPath)
+        /// <param name="config">Настройки.</param>
+        public FileTransferToOcr(IConfiguration config)
         {
-            this.fileUploadPath = fileUploadPath;
+            this.config = config;
         }
 
         /// <summary>
@@ -45,9 +47,50 @@
                 if (regexMatch != null && regexMatch.Count > 1)
                 {
                     string uploadKey = regex.Match(url).Groups[1].ToString();
+                    SendFileToOCRServiceAsync(uploadKey, fileName);
+                }
+            }
+        }
 
-                    // Отправка запроса OCR-сервису
-                    //  http://ocr-service/api/OcrRecognizer/RunRecognizeUploadedPdf?fileUploadPath=...&uploadKey=...&fileName=...
+        /// <summary>
+        /// Отправка запроса OCR-сервису на распознование содержимого файла и добавления в Elastic.
+        /// http://localhost:6600/api/OcrRecognizer/RunRecognizeUploadedPdf?uploadDirectory=...&uploadKey=...&fileName=...
+        /// </summary>
+        /// <param name="uploadKey">Уникальный идентификатор файла.</param>
+        /// <param name="fileName">Имя файла.</param>
+        public void SendFileToOCRServiceAsync(string uploadKey, string fileName)
+        {
+            string ocrServer = config["OCRServiceUrl"];
+            if (string.IsNullOrEmpty(ocrServer))
+            {
+                throw new ConfigurationErrorsException("OCRServiceUrl is not specified in Configuration or enviromnent variables.");
+            }
+
+            string uploadDirectory = config["UploadUrl"];
+            if (string.IsNullOrEmpty(uploadDirectory))
+            {
+                throw new ConfigurationErrorsException("UploadUrl is not specified in Configuration or enviromnent variables.");
+            }
+
+            string requestUrl = $"api/OcrRecognizer/RunRecognizeUploadedPdf" +
+                $"?uploadDirectory={uploadDirectory}" +
+                $"&uploadKey={uploadKey}" +
+                $"&fileName={fileName}";
+
+            using (HttpClient client = new HttpClient())
+            {
+                Uri baseAddress = new Uri(ocrServer);
+
+                try
+                {
+                    using (HttpResponseMessage response = client.PostAsync(new Uri(baseAddress, requestUrl), null).Result)
+                    {
+                        response.EnsureSuccessStatusCode();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogService.LogError("File to OSR-service sended error!\n" + ex.Message);
                 }
             }
         }

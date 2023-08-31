@@ -12,6 +12,7 @@ services:
       - BackendRoot=http://localhost
       - DefConnStr=SERVER=app-postgres-db;User ID=flexberryuser;Password=jhv;Port=5432;database=appdb;
       - ElasticUrl=http://elasticsearch:9200
+      - OCRServiceUrl=http://ocr-service:80
     volumes:
       - REPORTSPDF:/var/reportspdf
 

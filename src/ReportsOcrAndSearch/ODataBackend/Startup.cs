@@ -140,9 +140,9 @@
 
             string uploadPath = Configuration["UploadUrl"];
             RegisterDataObjectFileAccessor(container, uploadPath);
+
             container.RegisterType<IDataObjectUpdateHandler, FileTransferToOcr>(
-                Invoke.Constructor(
-                    uploadPath));
+                Invoke.Constructor(Configuration));
 
             RegisterORM(container);
         }
