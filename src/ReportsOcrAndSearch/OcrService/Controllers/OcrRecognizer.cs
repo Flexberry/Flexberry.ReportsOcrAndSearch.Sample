@@ -70,12 +70,12 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
 
             if (Directory.Exists(pngDirectory))
             {
-                Directory.Delete(pngDirectory, true);
+                Directory.Delete(Path.GetFullPath(pngDirectory), true);
             }
 
             if (Directory.Exists(recognitionDirectory))
             {
-                Directory.Delete(recognitionDirectory, true);
+                Directory.Delete(Path.GetFullPath(recognitionDirectory), true);
             }
             
             return Ok("Recognition completed");
