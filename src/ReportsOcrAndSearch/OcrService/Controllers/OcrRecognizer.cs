@@ -68,9 +68,16 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
                 return BadRequest("File to Elastic sended error.\n" + ex.Message);
             }
 
-            Directory.Delete(pngDirectory, true);
-            Directory.Delete(recognitionDirectory, true);
+            if (Directory.Exists(pngDirectory))
+            {
+                Directory.Delete(pngDirectory, true);
+            }
 
+            if (Directory.Exists(recognitionDirectory))
+            {
+                Directory.Delete(recognitionDirectory, true);
+            }
+            
             return Ok("Recognition completed");
         }
 

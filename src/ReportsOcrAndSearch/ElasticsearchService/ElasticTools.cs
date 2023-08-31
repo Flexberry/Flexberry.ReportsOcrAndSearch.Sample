@@ -14,12 +14,12 @@
         /// <summary>
         /// Адрес сервера Elastic.
         /// </summary>
-        private string elasticUrl;
+        private readonly string elasticUrl;
         
         /// <summary>
         /// Индекс, связанный с загружаемыми документами.
         /// </summary>
-        private string documentIndex;
+        private readonly string documentIndex;
 
         /// <summary>
         /// Конструктор класса.
