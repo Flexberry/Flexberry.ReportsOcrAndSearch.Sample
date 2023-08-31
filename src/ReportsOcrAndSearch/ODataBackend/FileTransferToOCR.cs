@@ -47,7 +47,7 @@
                 if (regexMatch != null && regexMatch.Count > 1)
                 {
                     string uploadKey = regex.Match(url).Groups[1].ToString();
-                    SendFileToOCRServiceAsync(uploadKey, fileName);
+                    SendFileToOCRService(uploadKey, fileName);
                 }
             }
         }
@@ -58,7 +58,7 @@
         /// </summary>
         /// <param name="uploadKey">Уникальный идентификатор файла.</param>
         /// <param name="fileName">Имя файла.</param>
-        public void SendFileToOCRServiceAsync(string uploadKey, string fileName)
+        public void SendFileToOCRService(string uploadKey, string fileName)
         {
             string ocrServer = config["OCRServiceUrl"];
             if (string.IsNullOrEmpty(ocrServer))
