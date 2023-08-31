@@ -36,7 +36,6 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
         [HttpPost]
         public IActionResult RunRecognizeUploadedPdf(string uploadDirectory, string uploadKey, string fileName)
         {
-            
             if (!System.IO.File.Exists(Path.Combine(uploadDirectory, uploadKey, fileName)))
             {
                 return BadRequest("Recognition error: File not found");
@@ -66,7 +65,6 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
             }
             catch (Exception ex)
             {
-
                 return BadRequest("File to Elastic sended error.\n" + ex.Message);
             }
             
