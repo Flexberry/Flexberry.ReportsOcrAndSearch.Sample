@@ -14,7 +14,7 @@
             <div class="field searchResult">
                 {{result.index}}) Результат, <b>{{result.FileName}}</b>. Номер страницы, <b>{{result.PageNumber}}</b> из <b>{{result.TotalPages}}</b>. 
                 <a class="documentLink" href="{{result.UploadUrl}}">Ссылка</a>
-                <button type="button" class="ui button" {{action "showModal" result.UploadUrl}}>Просмотр</button>
+                <button type="button" class="ui button" {{action "showModal" result.UploadUrl result.PageNumber}}>Просмотр</button>
             </div>
         {{/each}}
         {{/if}}
