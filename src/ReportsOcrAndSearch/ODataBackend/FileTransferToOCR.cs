@@ -106,8 +106,6 @@
         /// <returns>Результат удачного или нет выполнения метода.</returns>
         public bool CallbackBeforeDelete(DataObject dataObject)
         {
-            Console.WriteLine($"dataObject = {dataObject}");
-
             if (dataObject == null)
             {
                 throw new ArgumentNullException(nameof(dataObject));
@@ -150,15 +148,7 @@
                 throw new ConfigurationErrorsException("OCRServiceUrl is not specified in Configuration or enviromnent variables.");
             }
 
-            string uploadDirectory = config["UploadUrl"];
-            if (string.IsNullOrEmpty(uploadDirectory))
-            {
-                throw new ConfigurationErrorsException("UploadUrl is not specified in Configuration or enviromnent variables.");
-            }
-
-            string requestUrl = $"api/OcrRecognizer/DeleteRecognizedFileInfo" +
-                $"?uploadDirectory={uploadDirectory}" +
-                $"&uploadKey={uploadKey}";
+            string requestUrl = $"api/OcrRecognizer/DeleteRecognizedFileInfo?uploadKey={uploadKey}";
 
             using (HttpClient client = new HttpClient())
             {
