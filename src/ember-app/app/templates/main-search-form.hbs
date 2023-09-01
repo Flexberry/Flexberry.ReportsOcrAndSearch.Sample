@@ -1,6 +1,6 @@
 <h3 class="ui header">{{t "forms.main-search-form.caption"}}</h3>
 
-<form class="ui form flexberry-vertical-form" role="form">
+<form class="ui form flexberry-vertical-form" role="form" onsubmit={{action "runSearch" searchText}}>
     <div class="field search">
         <label class="searchLabel">{{t "forms.main-search-form.searchMessage"}}</label>
         {{input type="text" class="searchText" value=searchText}}
@@ -12,7 +12,9 @@
         {{#if showResults}}
         {{#each searchResults as |result|}}
             <div class="field searchResult">
-                {{result.index}}) Результат, <b>{{result.FileName}}</b>. Номер страницы, <b>{{result.PageNumber}}</b> из <b>{{result.TotalPages}}</b>. <a class="documentLink" href="{{result.UploadUrl}}">Ссылка</a>
+                {{result.index}}) Результат, <b>{{result.FileName}}</b>. Номер страницы, <b>{{result.PageNumber}}</b> из <b>{{result.TotalPages}}</b>. 
+                <a class="documentLink" href="{{result.UploadUrl}}">Ссылка</a>
+                <button type="button" class="ui button" {{action "showModal" result}}>Просмотр</button>
             </div>
         {{/each}}
         {{/if}}

@@ -23,9 +23,9 @@ export default Controller.extend({
 
         @property searchResults
         @type Array
-        @default []
+        @default null
     */
-    searchResults: [],
+    searchResults: null,
 
     /**
         Флаг отображения результатов.
@@ -36,6 +36,15 @@ export default Controller.extend({
     */
     showResults: false,
 
+    /**
+        Информация текущего файла.
+
+        @property currentDocumentInfo
+        @type Object
+        @default null
+    */
+    currentDocumentInfo: null,
+
     actions: {
         runSearch(searchText) {
             let appState = this.get('appState');
@@ -44,7 +53,7 @@ export default Controller.extend({
             if (!isEmpty(searchText)) {
                 appState.loading();
                 set(this, 'showResults', false);
-                set(this, 'searchResults', []);
+                set(this, 'searchResults', null);
 
                 $.ajax({
                     async: true,
@@ -70,6 +79,18 @@ export default Controller.extend({
                     }
                 });
             }
-        }
+        },
+
+        showModal(currentDocumentInfo) {
+            set(this, 'currentDocumentInfo', currentDocumentInfo);
+
+            this.send('showModalDialog', 
+                'modal/pdf-document', 
+                { controller: 'main-search-form' });
+        },
+      
+        closeModalDialog() {
+            this.send('removeModalDialog');
+        },
     }
 });
