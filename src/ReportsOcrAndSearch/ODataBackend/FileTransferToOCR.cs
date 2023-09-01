@@ -124,7 +124,7 @@
 
                 string url = reloadReport.reportFile.Url;
 
-                Regex regex = new Regex("fileUploadKey=(.*?)&");
+                Regex regex = new Regex("fileUploadKey=(.*?)&", RegexOptions.None, TimeSpan.FromMilliseconds(100));
                 GroupCollection regexMatch = regex.Match(url).Groups;
 
                 if (regexMatch != null && regexMatch.Count > 1)
