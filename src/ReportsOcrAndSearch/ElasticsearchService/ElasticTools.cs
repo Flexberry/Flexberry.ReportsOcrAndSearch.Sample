@@ -74,16 +74,23 @@
         public void SendFileContent(string fileName, string uploadKey, int totalPages, string originalFileName)
         {
             string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
-            string parseString = fileNameWithoutExtension.Substring(fileNameWithoutExtension.LastIndexOf("-") + 1);
-            int pageNumber;
-            try
+            int spliterIndex = fileNameWithoutExtension.LastIndexOf("-");
+            int pageNumber = 1;
+
+            // Если есть разделитель, значит страниц несколько.
+            if (spliterIndex > 0)
             {
-                pageNumber = Int32.Parse(parseString) + 1;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Не могу распознать номер страницы из '{parseString}'.\n {ex}");
-                throw new ArgumentException("File content sended error! Page number not valid.\n" + ex.Message);
+                string parseString = fileNameWithoutExtension.Substring(spliterIndex + 1);
+
+                try
+                {
+                    pageNumber = Int32.Parse(parseString) + 1;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Не могу распознать номер страницы из '{parseString}'.\n {ex}");
+                    throw new ArgumentException("File content sended error! Page number not valid.\n" + ex.Message);
+                }
             }
 
             string documentIndex = connectionConfig["ElasticDocumentsIndex"];
