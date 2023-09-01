@@ -12,32 +12,17 @@
     public class ElasticTools
     {
         /// <summary>
-        /// Адрес сервера Elastic.
+        /// Настройки соединения с Elastic.
         /// </summary>
-        private readonly string elasticUrl;
-        
-        /// <summary>
-        /// Индекс, связанный с загружаемыми документами.
-        /// </summary>
-        private readonly string documentIndex;
+        private readonly IConfiguration config;
 
         /// <summary>
         /// Конструктор класса.
         /// </summary>
         /// <param name="connectionConfig">Настройки соединения с Elastic.</param>
-        public ElasticTools(IConfiguration connectionConfig) 
+        public ElasticTools(IConfiguration config) 
         {
-            elasticUrl = connectionConfig["ElasticUrl"];
-            if (string.IsNullOrEmpty(elasticUrl))
-            {
-                throw new ConfigurationErrorsException("ElasticUrl is not specified in Configuration or enviromnent variables.");
-            }
-
-            documentIndex = connectionConfig["ElasticDocumentsIndex"];
-            if (string.IsNullOrEmpty(documentIndex))
-            {
-                throw new ConfigurationErrorsException("ElasticDocumentsIndex is not specified in Configuration or enviromnent variables.");
-            }
+            this.config = config;
         }
 
         /// <summary>
@@ -45,6 +30,12 @@
         /// </summary>
         public void ConfiguratePipelineAttachment()
         {
+            string elasticUrl = config["ElasticUrl"];
+            if (string.IsNullOrEmpty(elasticUrl))
+            {
+                throw new ConfigurationErrorsException("ElasticUrl is not specified in Configuration or enviromnent variables.");
+            }
+
             string requestUrl = "_ingest/pipeline/attachment";
 
             // Поле field должно иметь значение как имя поля в методе SendFileContent
@@ -81,6 +72,18 @@
         /// <param name="totalPages">Общее количество страниц в распознаваемом документе.</param>
         public void SendFileContent(string fileName, string uploadKey, int totalPages)
         {
+            string elasticUrl = config["ElasticUrl"];
+            if (string.IsNullOrEmpty(elasticUrl))
+            {
+                throw new ConfigurationErrorsException("ElasticUrl is not specified in Configuration or enviromnent variables.");
+            }
+
+            string documentIndex = config["ElasticDocumentsIndex"];
+            if (string.IsNullOrEmpty(documentIndex))
+            {
+                throw new ConfigurationErrorsException("ElasticDocumentsIndex is not specified in Configuration or enviromnent variables.");
+            }
+
             string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
             string parseString = fileNameWithoutExtension.Substring(fileNameWithoutExtension.LastIndexOf("-") + 1);
             int pageNumber;
@@ -131,6 +134,18 @@
         /// <param name="uploadKey">Уникальный идентификатор файла.</param>
         public void DeleteFileByUplodKey(string uploadKey)
         {
+            string elasticUrl = config["ElasticUrl"];
+            if (string.IsNullOrEmpty(elasticUrl))
+            {
+                throw new ConfigurationErrorsException("ElasticUrl is not specified in Configuration or enviromnent variables.");
+            }
+
+            string documentIndex = config["ElasticDocumentsIndex"];
+            if (string.IsNullOrEmpty(documentIndex))
+            {
+                throw new ConfigurationErrorsException("ElasticDocumentsIndex is not specified in Configuration or enviromnent variables.");
+            }
+
             string requestUrl = $"{documentIndex}/_delete_by_query";
 
             JObject jsonBody = new JObject(
