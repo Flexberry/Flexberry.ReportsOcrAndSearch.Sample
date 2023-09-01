@@ -5,6 +5,7 @@
     using System.Net.Http;
     using System.Text.RegularExpressions;
     using ICSSoft.STORMNET;
+    using ICSSoft.STORMNET.Business;
     using Microsoft.Extensions.Configuration;
 
     /// <summary>
@@ -12,6 +13,9 @@
     /// </summary>
     public class FileTransferToOcr : IDataObjectUpdateHandler
     {
+        /// <summary>
+        /// Настройки.
+        /// </summary>
         private readonly IConfiguration config;
 
         /// <summary>
@@ -91,6 +95,75 @@
                 catch (Exception ex)
                 {
                     LogService.LogError("File to OSR-service sended error!\n" + ex.Message);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Обработчик события удаления объекта.
+        /// </summary>
+        /// <param name="dataObject">Удаленный объект.</param>
+        /// <returns>Результат удачного или нет выполнения метода.</returns>
+        public bool CallbackBeforeDelete(DataObject dataObject)
+        {
+            if (dataObject == null)
+            {
+                throw new ArgumentNullException(nameof(dataObject));
+            }
+
+            if (dataObject.GetType() == typeof(Report))
+            {
+                Report report = (Report)dataObject;
+
+                Report reloadReport = new Report();
+                reloadReport.SetExistObjectPrimaryKey(report.__PrimaryKey);
+                var ds = (SQLDataService)DataServiceProvider.DataService;
+                ds.LoadObject(reloadReport);
+
+                string url = reloadReport.reportFile.Url;
+
+                Regex regex = new Regex("fileUploadKey=(.*?)&", RegexOptions.None, TimeSpan.FromMilliseconds(100));
+                GroupCollection regexMatch = regex.Match(url).Groups;
+
+                if (regexMatch != null && regexMatch.Count > 1)
+                {
+                    string uploadKey = regex.Match(url).Groups[1].ToString();
+                    DeleteFileFromOCRService(uploadKey);
+                }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Отправка запроса OCR-сервису на удаление ранее распознанного файла и информации по нему.
+        /// http://localhost:6600/api/OcrRecognizer/DeleteRecognizedFileInfo?uploadDirectory=...&uploadKey=...
+        /// </summary>
+        /// <param name="uploadKey">Уникальный идентификатор файла.</param>
+        public void DeleteFileFromOCRService(string uploadKey)
+        {
+            string ocrServer = config["OCRServiceUrl"];
+            if (string.IsNullOrEmpty(ocrServer))
+            {
+                throw new ConfigurationErrorsException("OCRServiceUrl is not specified in Configuration or enviromnent variables.");
+            }
+
+            string requestUrl = $"api/OcrRecognizer/DeleteRecognizedFileInfo?uploadKey={uploadKey}";
+
+            using (HttpClient client = new HttpClient())
+            {
+                Uri baseAddress = new Uri(ocrServer);
+
+                try
+                {
+                    using (HttpResponseMessage response = client.PostAsync(new Uri(baseAddress, requestUrl), null).Result)
+                    {
+                        response.EnsureSuccessStatusCode();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    LogService.LogError("File from OSR-service deleted error!\n" + ex.Message);
                 }
             }
         }

@@ -115,6 +115,7 @@
 
                 token.Events.CallbackAfterCreate = uploadedFilesHandler.CallbackAfterUpdate;
                 token.Events.CallbackAfterUpdate = uploadedFilesHandler.CallbackAfterUpdate;
+                token.Events.CallbackBeforeDelete = uploadedFilesHandler.CallbackBeforeDelete;
             });
         }
 

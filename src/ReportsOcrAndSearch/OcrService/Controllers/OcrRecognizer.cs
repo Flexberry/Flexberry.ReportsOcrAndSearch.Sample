@@ -190,6 +190,11 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
             }
         }
 
+        /// <summary>
+        /// Метод, обрабатывающий Post-запрос на распознавание указанного pdf файла. После распознавания файл отправляется в ElasticSearch.
+        /// Пример запроса - http://localhost:6600/api/OcrRecognizer/DeleteRecognizedFileInfo?uploadKey=...
+        /// </summary>
+        /// <param name="uploadKey">GUID загрузки.</param>
         [HttpPost]
         public IActionResult DeleteRecognizedFileInfo(string uploadKey)
         {
@@ -205,7 +210,7 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
                 return BadRequest("File information from Elastic delete error!\n" + ex.Message);
             }
 
-            return Ok("Recognized file information deleted.");
+            return Ok("Recognized file information & file was deleted.");
         }
     }
 }
