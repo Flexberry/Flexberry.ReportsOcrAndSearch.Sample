@@ -1,0 +1,17 @@
+{{#modal-dialog
+  title="Просмотр PDF"
+  useOkButton=false
+  useCloseButton=false
+  close="removeModalDialog"
+}}
+  <div class="ui form flexberry-vertical-form">
+    <div class="field">{{currentDocumentInfo.FileName}}</div>
+    <div class="field pdf-view">
+        {{pdf-view
+            startPage=currentDocumentInfo.PageNumber
+            pdf=currentDocumentInfo.UploadUrl
+            toolbarComponent="pdf-view-toolbar"
+        }}
+    </div>
+  </div>
+{{/modal-dialog}}

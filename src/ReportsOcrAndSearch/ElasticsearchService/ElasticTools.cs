@@ -49,7 +49,7 @@
                                 "attachment", 
                                 new JObject(
                                     new JProperty("field", "data")))))));
-            string jsonData = jsonBody.ToString(); 
+            string jsonData = jsonBody.ToString();
 
             try
             {
@@ -70,7 +70,8 @@
         /// <param name="fileName">Полное имя файла, связанного с одной страницей распознаваемого документа.</param>
         /// <param name="uploadKey">Уникальный ключ загружаемого файла.</param>
         /// <param name="totalPages">Общее количество страниц в распознаваемом документе.</param>
-        public void SendFileContent(string fileName, string uploadKey, int totalPages)
+        /// <param name="originalFileName">Имя оригинального файла.</param>
+        public void SendFileContent(string fileName, string uploadKey, int totalPages, string originalFileName)
         {
             string elasticUrl = config["ElasticUrl"];
             if (string.IsNullOrEmpty(elasticUrl))
@@ -85,23 +86,31 @@
             }
 
             string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
-            string parseString = fileNameWithoutExtension.Substring(fileNameWithoutExtension.LastIndexOf("-") + 1);
-            int pageNumber;
-            try
+            int spliterIndex = fileNameWithoutExtension.LastIndexOf("-");
+            int pageNumber = 1;
+
+            // Если есть разделитель, значит страниц несколько.
+            if (spliterIndex > 0)
             {
-                pageNumber = Int32.Parse(parseString) + 1;
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Не могу распознать номер страницы из '{parseString}'.\n {ex}");
-                throw new ArgumentException("File content sended error! Page number not valid.\n" + ex.Message);
+                string parseString = fileNameWithoutExtension.Substring(spliterIndex + 1);
+
+                try
+                {
+                    pageNumber = Int32.Parse(parseString) + 1;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Не могу распознать номер страницы из '{parseString}'.\n {ex}");
+                    throw new ArgumentException("File content sended error! Page number not valid.\n" + ex.Message);
+                }
             }
 
             string fileUrl = $"{documentIndex}/_doc/{uploadKey}_{pageNumber}";
             string requestUrl = $"{fileUrl}?pipeline=attachment";
 
             FileInfo fileInfo = new FileInfo(
-                name: Path.GetFileName(fileName),
+                name: originalFileName,
+                txtFileName: Path.GetFileName(fileName),
                 uploadKey: uploadKey,
                 pageNumber: pageNumber,
                 totalPages: totalPages);

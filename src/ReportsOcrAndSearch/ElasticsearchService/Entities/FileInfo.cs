@@ -11,6 +11,11 @@
         public string FileName { get; set; }
 
         /// <summary>
+        /// Имя распознанного файла.
+        /// </summary>
+        public string TxtFileName { get; set; }
+
+        /// <summary>
         /// Уникальный ключ загруженного файла.
         /// </summary>
         public string UploadKey { get; set; }
@@ -29,12 +34,14 @@
         /// Конструктор класса
         /// </summary>
         /// <param name="name">Имя файла.</param>
+        /// <param name="txtFileName">Имя распознанного файла.</param>
         /// <param name="uploadKey">Уникальный ключ загруженного файла.</param>
         /// <param name="pageNumber">Номер страницы.</param>
         /// <param name="totalPages">Общее количество страниц.</param>
-        public FileInfo(string name, string uploadKey, int pageNumber, int totalPages)
+        public FileInfo(string name, string txtFileName, string uploadKey, int pageNumber, int totalPages)
         {
             FileName = name;
+            TxtFileName = txtFileName;
             UploadKey = uploadKey;
             PageNumber = pageNumber;
             TotalPages = totalPages;
