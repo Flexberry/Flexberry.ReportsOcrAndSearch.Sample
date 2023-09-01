@@ -67,6 +67,9 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
             {
                 return BadRequest("File to Elastic sended error.\n" + ex.Message);
             }
+
+            Directory.Delete(Path.GetFullPath(pngDirectory), true);
+            Directory.Delete(Path.GetFullPath(recognitionDirectory), true);
             
             return Ok("Recognition completed");
         }
@@ -171,7 +174,7 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
                 Console.WriteLine($"Не удалось сконфигурировать конвейер для загрузки файла.\n" + ex.Message);
                 throw new HttpRequestException("File to Elastic sended error!\n" + ex.Message);
             }
-            
+
             foreach (string existingFile in txtFiles)
             {
                 try
@@ -184,6 +187,24 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
                     throw new HttpRequestException($"File '{existingFile}' to Elastic sended error!\n" + ex.Message);
                 }
             }
+        }
+
+        [HttpPost]
+        public IActionResult DeleteRecognizedFileInfo(string uploadKey)
+        {
+            ElasticTools elasticTools = new ElasticTools(config);
+            
+            try
+            {
+                elasticTools.DeleteFileByUplodKey(uploadKey);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Не удалось выполнить запрос на удаление информации по заданному uploadKey: {uploadKey}.\n" + ex.Message);
+                return BadRequest("File information from Elastic delete error!\n" + ex.Message);
+            }
+
+            return Ok("Recognized file information deleted.");
         }
     }
 }

@@ -12,17 +12,17 @@
     public class ElasticTools
     {
         /// <summary>
-        /// Настрой соединения с Elastic.
+        /// Настройки соединения с Elastic.
         /// </summary>
-        private readonly IConfiguration connectionConfig;
+        private readonly IConfiguration config;
 
         /// <summary>
         /// Конструктор класса.
         /// </summary>
         /// <param name="connectionConfig">Настройки соединения с Elastic.</param>
-        public ElasticTools(IConfiguration connectionConfig) 
+        public ElasticTools(IConfiguration config) 
         {
-            this.connectionConfig = connectionConfig;
+            this.config = config;
         }
 
         /// <summary>
@@ -30,6 +30,12 @@
         /// </summary>
         public void ConfiguratePipelineAttachment()
         {
+            string elasticUrl = config["ElasticUrl"];
+            if (string.IsNullOrEmpty(elasticUrl))
+            {
+                throw new ConfigurationErrorsException("ElasticUrl is not specified in Configuration or enviromnent variables.");
+            }
+
             string requestUrl = "_ingest/pipeline/attachment";
 
             // Поле field должно иметь значение как имя поля в методе SendFileContent
@@ -44,12 +50,6 @@
                                 new JObject(
                                     new JProperty("field", "data")))))));
             string jsonData = jsonBody.ToString(); 
-
-            string elasticUrl = connectionConfig["ElasticUrl"];
-            if (string.IsNullOrEmpty(elasticUrl))
-            {
-                throw new ConfigurationErrorsException("ElasticUrl is not specified in Configuration or enviromnent variables.");
-            }
 
             try
             {
@@ -72,6 +72,18 @@
         /// <param name="totalPages">Общее количество страниц в распознаваемом документе.</param>
         public void SendFileContent(string fileName, string uploadKey, int totalPages)
         {
+            string elasticUrl = config["ElasticUrl"];
+            if (string.IsNullOrEmpty(elasticUrl))
+            {
+                throw new ConfigurationErrorsException("ElasticUrl is not specified in Configuration or enviromnent variables.");
+            }
+
+            string documentIndex = config["ElasticDocumentsIndex"];
+            if (string.IsNullOrEmpty(documentIndex))
+            {
+                throw new ConfigurationErrorsException("ElasticDocumentsIndex is not specified in Configuration or enviromnent variables.");
+            }
+
             string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
             string parseString = fileNameWithoutExtension.Substring(fileNameWithoutExtension.LastIndexOf("-") + 1);
             int pageNumber;
@@ -85,14 +97,8 @@
                 throw new ArgumentException("File content sended error! Page number not valid.\n" + ex.Message);
             }
 
-            string documentIndex = connectionConfig["ElasticDocumentsIndex"];
-            if (string.IsNullOrEmpty(documentIndex))
-            {
-                throw new ConfigurationErrorsException("ElasticDocumentsIndex is not specified in Configuration or enviromnent variables.");
-            }
-
             string fileUrl = $"{documentIndex}/_doc/{uploadKey}_{pageNumber}";
-            string requestURL = $"{fileUrl}?pipeline=attachment";
+            string requestUrl = $"{fileUrl}?pipeline=attachment";
 
             FileInfo fileInfo = new FileInfo(
                 name: Path.GetFileName(fileName),
@@ -108,21 +114,59 @@
                 new JProperty("file", JObject.Parse(JsonConvert.SerializeObject(fileInfo))));
             string jsonData = jsonBody.ToString();
 
-            string elasticUrl = connectionConfig["ElasticUrl"];
+            try
+            {
+                Request.SendPutRequest(elasticUrl, requestUrl, jsonData);
+                Console.WriteLine($"Файл успешно загружен в Elastic. Доступ по адресу: {fileUrl}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Ошибка Put-запроса на загрузку данных файла в Elastic!\n" + ex.Message);
+                throw new HttpRequestException("File content sended error!\n" + ex.Message);
+            }
+        }
+
+        /// <summary>
+        /// Удаление данных по файлу из Elastic по заданному uploadKey.
+        /// Имя поля (file.UploadKey), по которому происходит поиск, 
+        /// совпадает с именем, заданным при отправке данных в методе SendFileContent.
+        /// </summary>
+        /// <param name="uploadKey">Уникальный идентификатор файла.</param>
+        public void DeleteFileByUplodKey(string uploadKey)
+        {
+            string elasticUrl = config["ElasticUrl"];
             if (string.IsNullOrEmpty(elasticUrl))
             {
                 throw new ConfigurationErrorsException("ElasticUrl is not specified in Configuration or enviromnent variables.");
             }
 
+            string documentIndex = config["ElasticDocumentsIndex"];
+            if (string.IsNullOrEmpty(documentIndex))
+            {
+                throw new ConfigurationErrorsException("ElasticDocumentsIndex is not specified in Configuration or enviromnent variables.");
+            }
+
+            string requestUrl = $"{documentIndex}/_delete_by_query";
+
+            JObject jsonBody = new JObject(
+                new JProperty(
+                    "query", 
+                    new JObject(
+                        new JProperty(
+                            "match",
+                            new JObject(
+                                new JProperty("file.UploadKey", uploadKey))))));
+            string jsonData = jsonBody.ToString();
+
             try
             {
-                Request.SendPutRequest(elasticUrl, requestURL, jsonData);
-                Console.WriteLine($"Файл успешно загружен в Elastic. Доступ по адресу: {fileUrl}");
+                Request.SendPostRequest(elasticUrl, requestUrl, jsonData);
+                Console.WriteLine($"Успешно удалены данные из Elastic по файлу.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Ошибка Put-запроса: \n" + ex.Message);
-                throw new HttpRequestException("File content sended error!\n" + ex.Message);
+                Console.WriteLine("Ошибка Post-запроса на удаление данных по файлу из Elastic!\n" + ex.Message);
+                throw new HttpRequestException("File delete request error!\n" + ex.Message);
             }
         }
     }
