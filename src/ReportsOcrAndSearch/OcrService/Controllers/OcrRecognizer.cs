@@ -190,7 +190,7 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
         }
 
         [HttpPost]
-        public IActionResult DeleteRecognizedFileInfo(string uploadKey)
+        public IActionResult DeleteRecognizedFileInfo(string uploadDirectory, string uploadKey)
         {
             ElasticTools elasticTools = new ElasticTools(config);
             
@@ -204,7 +204,13 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
                 return BadRequest("File information from Elastic delete error!\n" + ex.Message);
             }
 
-            return Ok("Recognized file information deleted.");
+            string fileDirectory = Path.Combine(uploadDirectory, uploadKey);
+            if (Directory.Exists(fileDirectory))
+            {
+                Directory.Delete(Path.GetFullPath(uploadDirectory), true);
+            }
+            
+            return Ok("Recognized file information & file was deleted.");
         }
     }
 }
