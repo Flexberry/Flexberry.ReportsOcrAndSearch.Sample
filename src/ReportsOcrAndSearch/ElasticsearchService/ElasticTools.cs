@@ -105,12 +105,6 @@
                 }
             }
 
-            string documentIndex = connectionConfig["ElasticDocumentsIndex"];
-            if (string.IsNullOrEmpty(documentIndex))
-            {
-                throw new ConfigurationErrorsException("ElasticDocumentsIndex is not specified in Configuration or enviromnent variables.");
-            }
-
             string fileUrl = $"{documentIndex}/_doc/{uploadKey}_{pageNumber}";
             string requestUrl = $"{fileUrl}?pipeline=attachment";
 
