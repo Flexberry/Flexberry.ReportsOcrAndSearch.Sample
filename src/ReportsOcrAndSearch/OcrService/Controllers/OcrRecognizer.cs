@@ -208,7 +208,7 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
                 Console.WriteLine($"Не удалось выполнить запрос на удаление информации по заданному uploadKey: {uploadKey}.\n" + ex.Message);
                 return BadRequest("File information from Elastic delete error!\n" + ex.Message);
             }
-            
+
             return Ok("Recognized file information & file was deleted.");
         }
     }
