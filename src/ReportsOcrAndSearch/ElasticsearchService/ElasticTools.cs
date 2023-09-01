@@ -43,7 +43,7 @@
                                 "attachment", 
                                 new JObject(
                                     new JProperty("field", "data")))))));
-            string jsonData = jsonBody.ToString(); 
+            string jsonData = jsonBody.ToString();
 
             string elasticUrl = connectionConfig["ElasticUrl"];
             if (string.IsNullOrEmpty(elasticUrl))
@@ -70,7 +70,8 @@
         /// <param name="fileName">Полное имя файла, связанного с одной страницей распознаваемого документа.</param>
         /// <param name="uploadKey">Уникальный ключ загружаемого файла.</param>
         /// <param name="totalPages">Общее количество страниц в распознаваемом документе.</param>
-        public void SendFileContent(string fileName, string uploadKey, int totalPages)
+        /// <param name="originalFileName">Имя оригинального файла.</param>
+        public void SendFileContent(string fileName, string uploadKey, int totalPages, string originalFileName)
         {
             string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(fileName);
             string parseString = fileNameWithoutExtension.Substring(fileNameWithoutExtension.LastIndexOf("-") + 1);
@@ -95,7 +96,8 @@
             string requestURL = $"{fileUrl}?pipeline=attachment";
 
             FileInfo fileInfo = new FileInfo(
-                name: Path.GetFileName(fileName),
+                name: originalFileName,
+                txtFileName: Path.GetFileName(fileName),
                 uploadKey: uploadKey,
                 pageNumber: pageNumber,
                 totalPages: totalPages);

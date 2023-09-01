@@ -61,7 +61,7 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
 
             try
             {
-                sendToElasticsearch(recognitionDirectory, uploadKey);
+                sendToElasticsearch(recognitionDirectory, uploadKey, fileName);
             }
             catch (Exception ex)
             {
@@ -153,7 +153,8 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
         /// </summary>
         /// <param name="recognitionDirectory">Директория с распознанными файлами.</param>
         /// <param name="uploadKey">GUID загрузки.</param>
-        private void sendToElasticsearch(string recognitionDirectory, string uploadKey)
+        /// <param name="originalFileName">Имя оригинального файла.</param>
+        private void sendToElasticsearch(string recognitionDirectory, string uploadKey, string originalFileName)
         {
             // Получаем список распознанных файлов.
             List<string> txtFiles = Directory.GetFiles(recognitionDirectory, "*.txt").ToList();
@@ -176,7 +177,7 @@ namespace IIS.ReportsOcrAndSearch.OcrService.Controllers
             {
                 try
                 {
-                    elasticTools.SendFileContent(existingFile, uploadKey, totalPages);
+                    elasticTools.SendFileContent(existingFile, uploadKey, totalPages, originalFileName);
                 }
                 catch (Exception ex)
                 {

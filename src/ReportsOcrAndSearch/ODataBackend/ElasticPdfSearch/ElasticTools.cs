@@ -13,7 +13,7 @@
     public class ElasticTools
     {
         private readonly IConfiguration config;
-        private readonly string indexName = "documents";
+        private readonly string indexName;
 
         /// <summary>
         /// Поиск документов в эластике.
@@ -61,14 +61,14 @@
                     foreach (var hit in hits)
                     {
                         var fileInfo = hit.SelectToken("$._source.file");
-                        var uploadKey = fileInfo.Value<string>("upload_key");
-                        var fileName = fileInfo.Value<string>("name");
+                        var uploadKey = fileInfo.Value<string>("UploadKey");
+                        var fileName = fileInfo.Value<string>("FileName");
                         var elem = new PdfSearchResult(
                             uploadKey: uploadKey,
                             fileName: fileName,
                             uploadUrl: GetFileUrl(config["BackendRoot"], uploadKey, fileName),
-                            pageNumber: fileInfo.Value<string>("pagenumber"),
-                            totalPages: fileInfo.Value<string>("totalpages"));
+                            pageNumber: fileInfo.Value<string>("PageNumber"),
+                            totalPages: fileInfo.Value<string>("TotalPages"));
 
                         resultList.Add(elem);
                     }

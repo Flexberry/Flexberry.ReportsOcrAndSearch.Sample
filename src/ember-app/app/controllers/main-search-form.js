@@ -37,22 +37,13 @@ export default Controller.extend({
     showResults: false,
 
     /**
-        URL текущего просмотра файла.
+        Информация текущего файла.
 
-        @property uploadUrl
-        @type String
+        @property currentDocumentInfo
+        @type Object
         @default null
     */
-    uploadUrl: null,
-
-    /**
-        Номер страницы текущего просмотра файла.
-
-        @property pageNumber
-        @type String
-        @default null
-    */
-    pageNumber: null,
+    currentDocumentInfo: null,
 
     actions: {
         runSearch(searchText) {
@@ -90,9 +81,8 @@ export default Controller.extend({
             }
         },
 
-        showModal(uploadUrl, pageNumber) {
-            set(this, 'uploadUrl', uploadUrl);
-            set(this, 'pageNumber', pageNumber);
+        showModal(currentDocumentInfo) {
+            set(this, 'currentDocumentInfo', currentDocumentInfo);
 
             this.send('showModalDialog', 
                 'modal/pdf-document', 

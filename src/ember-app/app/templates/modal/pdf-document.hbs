@@ -5,11 +5,11 @@
   close="removeModalDialog"
 }}
   <div class="ui form flexberry-vertical-form">
-    <div class="field">{{uploadUrl}},{{pageNumber}}</div>
+    <div class="field">{{currentDocumentInfo.FileName}}</div>
     <div class="field">
         {{pdf-view
-            startPage=pageNumber
-            pdf=uploadUrl
+            startPage=currentDocumentInfo.PageNumber
+            pdf=currentDocumentInfo.UploadUrl
             toolbarComponent="pdf-view-toolbar"
         }}
     </div>
