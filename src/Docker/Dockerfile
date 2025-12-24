@@ -16,7 +16,7 @@ RUN \
 
 RUN \
   set -x; \
-  ember build --environment=docker
+  yarn ember build --environment=docker
 
 FROM mcr.microsoft.com/dotnet/sdk:3.1 as backend
 
